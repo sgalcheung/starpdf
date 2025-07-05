@@ -9,6 +9,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.11.0"
-  }
+    "@astrojs/netlify": "^6.4.1",
+    "@astrojs/react": "^4.3.0",
+    "@astrojs/starlight": "^0.34.4",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "astro": "^5.11.0",
+    "pdfjs-dist": "^5.3.31",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "packageManager": "pnpm@9.15.4"
 }

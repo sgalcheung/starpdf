@@ -1,0 +1,119 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { siteInfo, type CatalogItem } from "../data/site-info";
+import "pdfjs-dist/web/pdf_viewer.css";
+
+export async function getStaticPaths() {
+  return siteInfo.catalogs.flatMap((catalog) =>
+    catalog.items.map((item) => ({
+      params: { catalogItemSlug: item.link },
+      props: { item },
+    }))
+  );
+}
+
+const { item } = Astro.props as { item: CatalogItem };
+---
+
+<StarlightPage frontmatter={{ title: item.label }}>
+  <div id="viewerContainer" data-pdf-url={item.pdfUrl}>
+    <div id="viewer" class="pdfViewer"></div>
+  </div>
+
+  <style>
+    #viewerContainer {
+      max-width: 46rem;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background: #f9f9f9;
+    }
+  </style>
+
+  <!-- <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.31/pdf.min.js"
+  ></script>
+  <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.31/pdf_viewer.min.js"
+  ></script> -->
+
+  <script>
+    import * as pdfjsLib from "pdfjs-dist";
+    import * as pdfjsViewer from "pdfjs-dist/web/pdf_viewer.mjs";
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
+
+    const CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
+    const CMAP_PACKED = true;
+    const ENABLE_XFA = true;
+    const SEARCH_FOR = ""; // try "Mozilla";
+
+    const SANDBOX_BUNDLE_SRC = new URL(
+      "../../node_modules/pdfjs-dist/build/pdf.sandbox.mjs",
+      window.location.href
+    );
+
+    const container = document.getElementById("viewerContainer");
+    if (!(container instanceof HTMLDivElement)) {
+      throw new Error("Container element is not a HTMLDivElement.");
+    }
+    const pdfUrl = container.dataset.pdfUrl;
+
+    const eventBus = new pdfjsViewer.EventBus();
+
+    // (Optionally) enable hyperlinks within PDF files.
+    const pdfLinkService = new pdfjsViewer.PDFLinkService({
+      eventBus,
+    });
+
+    // (Optionally) enable find controller.
+    const pdfFindController = new pdfjsViewer.PDFFindController({
+      eventBus,
+      linkService: pdfLinkService,
+    });
+
+    // (Optionally) enable scripting support.
+    const pdfScriptingManager = new pdfjsViewer.PDFScriptingManager({
+      eventBus,
+      sandboxBundleSrc: SANDBOX_BUNDLE_SRC,
+    });
+
+    const pdfViewer = new pdfjsViewer.PDFViewer({
+      container,
+      eventBus,
+      linkService: pdfLinkService,
+      findController: pdfFindController,
+      scriptingManager: pdfScriptingManager,
+    });
+    pdfLinkService.setViewer(pdfViewer);
+    pdfScriptingManager.setViewer(pdfViewer);
+
+    eventBus.on("pagesinit", function () {
+      // We can use pdfViewer now, e.g. let's change default scale.
+      pdfViewer.currentScaleValue = "page-width";
+
+      // We can try searching for things.
+      if (SEARCH_FOR) {
+        eventBus.dispatch("find", { type: "", query: SEARCH_FOR });
+      }
+    });
+
+    // Loading document.
+    const loadingTask = pdfjsLib.getDocument({
+      url: pdfUrl,
+      cMapUrl: CMAP_URL,
+      cMapPacked: CMAP_PACKED,
+      enableXfa: ENABLE_XFA,
+    });
+
+    const pdfDocument = await loadingTask.promise;
+    // Document loaded, specifying document for the viewer and
+    // the (optional) linkService.
+    pdfViewer.setDocument(pdfDocument);
+
+    pdfLinkService.setDocument(pdfDocument, null);
+  </script>
+</StarlightPage>

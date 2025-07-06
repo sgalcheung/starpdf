@@ -32,5 +32,15 @@ export const siteInfo: SiteInfo = {
         },
       ],
     },
+    {
+      label: "行政管理研究方法",
+      items: [
+        {
+          label: "专栏导语",
+          link: "/jpa/jpa-research-methods",
+          pdfUrl: "https://jpa.sysu.edu.cn/docs/20091207154349000105.pdf",
+        },
+      ],
+    },
   ],
 };

@@ -6,6 +6,7 @@ import starlight from "@astrojs/starlight";
 import netlify from "@astrojs/netlify";
 
 import react from "@astrojs/react";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,4 +26,16 @@ export default defineConfig({
   ],
 
   adapter: netlify(),
+  vite: {
+    plugins: [
+      viteStaticCopy({
+        targets: [
+          {
+            src: "node_modules/pdfjs-dist/cmaps/**/*",
+            dest: "cmaps",
+          },
+        ],
+      }),
+    ],
+  },
 });

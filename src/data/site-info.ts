@@ -40,6 +40,11 @@ export const siteInfo: SiteInfo = {
           link: "/jpa/jpa-research-methods",
           pdfUrl: "https://jpa.sysu.edu.cn/docs/20091207154349000105.pdf",
         },
+        {
+          label: "专栏导语（本地）",
+          link: "/jpa/jpa-research-methods-local",
+          pdfUrl: "/pdf/jpa-research-methods.pdf",
+        },
       ],
     },
   ],

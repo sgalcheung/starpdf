@@ -13,9 +13,16 @@ export default defineConfig({
     starlight({
       title: "Starlight PDF Viewer",
       routeMiddleware: "./src/routeMiddleware.ts",
+      social: [
+        {
+          icon: "github",
+          label: "GitLab",
+          href: "https://github.com/sgalcheung/starpdf",
+        },
+      ],
     }),
     react(),
   ],
 
-  adapter: netlify()
+  adapter: netlify(),
 });

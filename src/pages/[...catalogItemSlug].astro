@@ -31,21 +31,11 @@ const { item } = Astro.props as { item: CatalogItem };
     }
   </style>
 
-  <!-- <script
-    is:inline
-    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.31/pdf.min.js"
-  ></script>
-  <script
-    is:inline
-    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.31/pdf_viewer.min.js"
-  ></script> -->
-
   <script>
     import * as pdfjsLib from "pdfjs-dist";
     import * as pdfjsViewer from "pdfjs-dist/web/pdf_viewer.mjs";
 
     pdfjsLib.GlobalWorkerOptions.workerSrc =
-      // "../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
       new URL("pdfjs-dist/build/pdf.worker.mjs", import.meta.url).toString();
 
     const CMAP_URL = "/cmaps/";
@@ -54,10 +44,6 @@ const { item } = Astro.props as { item: CatalogItem };
     const SEARCH_FOR = ""; // try "Mozilla";
 
     const SANDBOX_BUNDLE_SRC =
-      // new URL(
-      //   "../../node_modules/pdfjs-dist/build/pdf.sandbox.mjs",
-      //   window.location.href
-      // );
       new URL("pdfjs-dist/build/pdf.sandbox.mjs", import.meta.url).toString();
 
     const container = document.getElementById("viewerContainer");

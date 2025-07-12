@@ -38,7 +38,8 @@ export const siteInfo: SiteInfo = {
         {
           label: "专栏导语",
           link: "/jpa/jpa-research-methods",
-          pdfUrl: "https://jpa.sysu.edu.cn/docs/20091207154349000105.pdf",
+          pdfUrl:
+            "http://138.2.67.85:8080/https://jpa.sysu.edu.cn/docs/20091207154349000105.pdf",
         },
         {
           label: "专栏导语（本地）",

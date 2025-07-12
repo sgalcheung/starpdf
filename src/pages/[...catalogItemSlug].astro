@@ -35,16 +35,20 @@ const { item } = Astro.props as { item: CatalogItem };
     import * as pdfjsLib from "pdfjs-dist";
     import * as pdfjsViewer from "pdfjs-dist/web/pdf_viewer.mjs";
 
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      new URL("pdfjs-dist/build/pdf.worker.mjs", import.meta.url).toString();
+    pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+      "pdfjs-dist/build/pdf.worker.mjs",
+      import.meta.url
+    ).toString();
 
     const CMAP_URL = "/cmaps/";
     const CMAP_PACKED = true;
     const ENABLE_XFA = true;
     const SEARCH_FOR = ""; // try "Mozilla";
 
-    const SANDBOX_BUNDLE_SRC =
-      new URL("pdfjs-dist/build/pdf.sandbox.mjs", import.meta.url).toString();
+    const SANDBOX_BUNDLE_SRC = new URL(
+      "pdfjs-dist/build/pdf.sandbox.mjs",
+      import.meta.url
+    ).toString();
 
     const container = document.getElementById("viewerContainer");
     if (!(container instanceof HTMLDivElement)) {
@@ -91,19 +95,35 @@ const { item } = Astro.props as { item: CatalogItem };
       }
     });
 
-    // Loading document.
-    const loadingTask = pdfjsLib.getDocument({
-      url: pdfUrl,
-      cMapUrl: CMAP_URL,
-      cMapPacked: CMAP_PACKED,
-      enableXfa: ENABLE_XFA,
-    });
+    if (pdfUrl) {
+      // temp: wait:https://github.com/mozilla/pdf.js/issues/20040
+      const response = await fetch(pdfUrl, {
+        headers: {
+          "x-requested-with": "XMLHttpRequest",
+        },
+      });
 
-    const pdfDocument = await loadingTask.promise;
-    // Document loaded, specifying document for the viewer and
-    // the (optional) linkService.
-    pdfViewer.setDocument(pdfDocument);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch PDF: ${response.statusText}`);
+      }
 
-    pdfLinkService.setDocument(pdfDocument, null);
+      const arrayBuffer = await response.arrayBuffer();
+
+      // Loading document.
+      const loadingTask = pdfjsLib.getDocument({
+        // url: pdfUrl,
+        data: arrayBuffer,
+        cMapUrl: CMAP_URL,
+        cMapPacked: CMAP_PACKED,
+        enableXfa: ENABLE_XFA,
+      });
+
+      const pdfDocument = await loadingTask.promise;
+      // Document loaded, specifying document for the viewer and
+      // the (optional) linkService.
+      pdfViewer.setDocument(pdfDocument);
+
+      pdfLinkService.setDocument(pdfDocument, null);
+    }
   </script>
 </StarlightPage>

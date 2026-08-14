@@ -1,23 +1,34 @@
 ---
-import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import { siteInfo, type CatalogItem } from "../data/site-info";
-import "pdfjs-dist/web/pdf_viewer.css";
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { siteInfo, type CatalogItem } from '../data/site-info';
+import 'pdfjs-dist/web/pdf_viewer.css';
+
+const isRemotePdfUrl = (pdfUrl: string) => /^https?:\/\//i.test(pdfUrl);
 
 export async function getStaticPaths() {
   return siteInfo.catalogs.flatMap((catalog) =>
     catalog.items.map((item) => ({
       params: { catalogItemSlug: item.link },
       props: { item },
-    }))
+    })),
   );
 }
 
+function resolvePdfUrl(pdfUrl: string) {
+  if (isRemotePdfUrl(pdfUrl)) {
+    return pdfUrl;
+  }
+
+  return pdfUrl;
+}
+
 const { item } = Astro.props as { item: CatalogItem };
+const pdfUrl = resolvePdfUrl(item.pdfUrl);
 ---
 
 <StarlightPage frontmatter={{ title: item.label }}>
-  <div id="viewerContainer" data-pdf-url={item.pdfUrl}>
-    <div id="viewer" class="pdfViewer"></div>
+  <div id='viewerContainer' data-pdf-url={pdfUrl}>
+    <div id='viewer' class='pdfViewer'></div>
   </div>
 
   <style>
@@ -32,27 +43,27 @@ const { item } = Astro.props as { item: CatalogItem };
   </style>
 
   <script>
-    import * as pdfjsLib from "pdfjs-dist";
-    import * as pdfjsViewer from "pdfjs-dist/web/pdf_viewer.mjs";
+    import * as pdfjsLib from 'pdfjs-dist';
+    import * as pdfjsViewer from 'pdfjs-dist/web/pdf_viewer.mjs';
 
     pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-      "pdfjs-dist/build/pdf.worker.mjs",
-      import.meta.url
+      'pdfjs-dist/build/pdf.worker.mjs',
+      import.meta.url,
     ).toString();
 
-    const CMAP_URL = "/cmaps/";
+    const CMAP_URL = '/cmaps/';
     const CMAP_PACKED = true;
     const ENABLE_XFA = true;
-    const SEARCH_FOR = ""; // try "Mozilla";
+    const SEARCH_FOR = ''; // try "Mozilla";
 
     const SANDBOX_BUNDLE_SRC = new URL(
-      "pdfjs-dist/build/pdf.sandbox.mjs",
-      import.meta.url
+      'pdfjs-dist/build/pdf.sandbox.mjs',
+      import.meta.url,
     ).toString();
 
-    const container = document.getElementById("viewerContainer");
+    const container = document.getElementById('viewerContainer');
     if (!(container instanceof HTMLDivElement)) {
-      throw new Error("Container element is not a HTMLDivElement.");
+      throw new Error('Container element is not a HTMLDivElement.');
     }
     const pdfUrl = container.dataset.pdfUrl;
 
@@ -85,13 +96,13 @@ const { item } = Astro.props as { item: CatalogItem };
     pdfLinkService.setViewer(pdfViewer);
     pdfScriptingManager.setViewer(pdfViewer);
 
-    eventBus.on("pagesinit", function () {
+    eventBus.on('pagesinit', function () {
       // We can use pdfViewer now, e.g. let's change default scale.
-      pdfViewer.currentScaleValue = "page-width";
+      pdfViewer.currentScaleValue = 'page-width';
 
       // We can try searching for things.
       if (SEARCH_FOR) {
-        eventBus.dispatch("find", { type: "", query: SEARCH_FOR });
+        eventBus.dispatch('find', { type: '', query: SEARCH_FOR });
       }
     });
 
@@ -99,7 +110,7 @@ const { item } = Astro.props as { item: CatalogItem };
       // temp: wait:https://github.com/mozilla/pdf.js/issues/20040
       const response = await fetch(pdfUrl, {
         headers: {
-          "x-requested-with": "XMLHttpRequest",
+          'x-requested-with': 'XMLHttpRequest',
         },
       });
 

@@ -1,24 +1,24 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig } from 'astro/config';
 
-import starlight from "@astrojs/starlight";
+import starlight from '@astrojs/starlight';
 
-import netlify from "@astrojs/netlify";
+import netlify from '@astrojs/netlify';
 
-import react from "@astrojs/react";
-import { viteStaticCopy } from "vite-plugin-static-copy";
+import react from '@astrojs/react';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [
     starlight({
-      title: "Starlight PDF Viewer",
-      routeMiddleware: "./src/routeMiddleware.ts",
+      title: 'Starlight PDF Viewer',
+      routeMiddleware: './src/routeMiddleware.ts',
       social: [
         {
-          icon: "github",
-          label: "GitLab",
-          href: "https://github.com/sgalcheung/starpdf",
+          icon: 'github',
+          label: 'GitLab',
+          href: 'https://github.com/sgalcheung/starpdf',
         },
       ],
     }),
@@ -31,8 +31,9 @@ export default defineConfig({
       viteStaticCopy({
         targets: [
           {
-            src: "node_modules/pdfjs-dist/cmaps/**/*",
-            dest: "cmaps",
+            src: 'node_modules/pdfjs-dist/cmaps/**/*',
+            dest: 'cmaps',
+            rename: { stripBase: 3 },
           },
         ],
       }),

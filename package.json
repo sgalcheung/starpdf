@@ -16,15 +16,17 @@
     "@types/react-dom": "^19.1.6",
     "astro": "^7.2.2",
     "astro-emit-asset": "^0.1.4",
+    "image-size": "^2.0.2",
     "marked": "^18.0.9",
+    "node-html-parser": "^9.0.1",
     "pdfjs-dist": "^5.3.31",
-    "puppeteer": "^25.7.0",
+    "pdfkit": "^0.19.1",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "sharp": "^0.35.3"
+    "react-dom": "^19.1.0"
   },
   "packageManager": "pnpm@10.30.3",
   "devDependencies": {
+    "@types/pdfkit": "^0.17.6",
     "vite-plugin-static-copy": "^4.1.1"
   }
 }

@@ -40,6 +40,6 @@ export function renderedHtml(
   if (format === FORMATS.PDF) {
     return `<iframe${addAttribute(page.src, 'src')}${addAttribute(page.width, 'width')}${addAttribute(page.height, 'height')}></iframe>`;
   }
-  
+  // TODO: hide pdf url
   return `<img data-lilypond-image${classAttr}${addAttribute(page.src, 'src')}${addAttribute(page.width, 'width')}${addAttribute(page.height, 'height')}${addAttribute(alt, 'alt')}${styleAttr}>`;
 }

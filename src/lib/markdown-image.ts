@@ -25,17 +25,17 @@ type HtmlBlock =
       type: 'hr';
     };
 
-const FONT_REGULAR = path.join(
-  process.cwd(),
-  'public/fonts/NotoSansSC-Regular.ttf',
-);
+// const FONT_REGULAR = path.join(
+//   process.cwd(),
+//   'public/fonts/NotoSansSC-Regular.ttf',
+// );
 
-const FONT_BOLD = path.join(process.cwd(), 'public/fonts/NotoSansSC-Bold.ttf');
+// const FONT_BOLD = path.join(process.cwd(), 'public/fonts/NotoSansSC-Bold.ttf');
 
-const FONT_ITALIC = path.join(
-  process.cwd(),
-  'public/fonts/NotoSansSC-Italic.ttf',
-);
+// const FONT_ITALIC = path.join(
+//   process.cwd(),
+//   'public/fonts/NotoSansSC-Italic.ttf',
+// );
 
 /**
  * Markdown → PDF
@@ -202,8 +202,8 @@ function renderHeading(
   fontSize: number,
 ) {
   ensureSpace(doc, 80);
-
-  doc.font(FONT_BOLD).fontSize(fontSize).fillColor('#222');
+  // doc.font(FONT_BOLD).fontSize(fontSize).fillColor('#222');
+  doc.fontSize(fontSize).fillColor('#222');
 
   renderInlineText(doc, html);
 
@@ -222,7 +222,8 @@ function renderParagraph(doc: PDFKit.PDFDocument, html: string) {
 
   ensureSpace(doc, 40);
 
-  doc.font(FONT_REGULAR).fontSize(12).fillColor('#222');
+  // doc.font(FONT_REGULAR).fontSize(12).fillColor('#222');
+  doc.fontSize(12).fillColor('#222');
 
   renderInlineText(doc, html);
 
@@ -250,7 +251,8 @@ function renderInlineText(doc: PDFKit.PDFDocument, html: string) {
     }
 
     if (/^<strong>/i.test(token) || /^<b>/i.test(token)) {
-      doc.font(FONT_BOLD).text(stripHtml(token), {
+      // doc.font(FONT_BOLD).text(stripHtml(token), {
+      doc.text(stripHtml(token), {
         continued: true,
       });
 
@@ -258,7 +260,8 @@ function renderInlineText(doc: PDFKit.PDFDocument, html: string) {
     }
 
     if (/^<em>/i.test(token) || /^<i>/i.test(token)) {
-      doc.font(FONT_ITALIC).text(stripHtml(token), {
+      // doc.font(FONT_ITALIC).text(stripHtml(token), {
+      doc.text(stripHtml(token), {
         continued: true,
       });
 
@@ -266,7 +269,8 @@ function renderInlineText(doc: PDFKit.PDFDocument, html: string) {
     }
 
     if (/^<code>/i.test(token)) {
-      doc.font(FONT_REGULAR).fontSize(10).text(stripHtml(token), {
+      // doc.font(FONT_REGULAR).fontSize(10).text(stripHtml(token), {
+      doc.fontSize(10).text(stripHtml(token), {
         continued: true,
       });
 
@@ -282,7 +286,8 @@ function renderInlineText(doc: PDFKit.PDFDocument, html: string) {
     }
 
     if (/^<a/i.test(token)) {
-      doc.font(FONT_REGULAR).text(stripHtml(token), {
+      // doc.font(FONT_REGULAR).text(stripHtml(token), {
+      doc.text(stripHtml(token), {
         continued: true,
         underline: true,
       });
@@ -290,7 +295,8 @@ function renderInlineText(doc: PDFKit.PDFDocument, html: string) {
       continue;
     }
 
-    doc.font(FONT_REGULAR).fontSize(12).text(decodeHtml(token), {
+    // doc.font(FONT_REGULAR).fontSize(12).text(decodeHtml(token), {
+    doc.fontSize(12).text(decodeHtml(token), {
       continued: true,
     });
   }
@@ -315,7 +321,8 @@ function renderList(doc: PDFKit.PDFDocument, html: string, ordered: boolean) {
     const x = MARGIN;
     const y = doc.y;
 
-    doc.font(FONT_REGULAR).fontSize(12).text(bullet, x, y, {
+    // doc.font(FONT_REGULAR).fontSize(12).text(bullet, x, y, {
+    doc.fontSize(12).text(bullet, x, y, {
       width: 20,
     });
 
@@ -344,7 +351,7 @@ function renderBlockquote(doc: PDFKit.PDFDocument, html: string) {
   doc.save().rect(x, y, 4, 50).fill('#999').restore();
 
   doc
-    .font(FONT_ITALIC)
+    // .font(FONT_ITALIC)
     .fontSize(12)
     .fillColor('#666')
     .text(text, x + 15, y, {
@@ -393,7 +400,8 @@ function renderImage(doc: PDFKit.PDFDocument, src: string, alt: string) {
     doc.moveDown(1);
 
     if (alt) {
-      doc.font(FONT_REGULAR).fontSize(9).fillColor('#888').text(alt, {
+      // doc.font(FONT_REGULAR).fontSize(9).fillColor('#888').text(alt, {
+      doc.fontSize(9).fillColor('#888').text(alt, {
         width: maxWidth,
         align: 'center',
       });

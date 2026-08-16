@@ -33,12 +33,12 @@ export const siteInfo: SiteInfo = {
       items: [
         {
           label: 'helloworld',
-          link: '/getting-started/helloworld',
-          pdfUrl: '/pdf/helloworld.pdf',
+          link: '/starpdf/getting-started/helloworld',
+          pdfUrl: '/starpdf/pdf/helloworld.pdf',
         },
         {
           label: 'compressed.tracemonkey-pldi-09',
-          link: '/getting-started/compressed.tracemonkey-pldi-09',
+          link: '/starpdf/getting-started/compressed.tracemonkey-pldi-09',
           pdfUrl: toProxyPdfUrl(
             'https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf',
           ),
@@ -50,15 +50,15 @@ export const siteInfo: SiteInfo = {
       items: [
         {
           label: '专栏导语',
-          link: '/jpa/jpa-research-methods',
+          link: '/starpdf/jpa/jpa-research-methods',
           pdfUrl: toProxyPdfUrl(
             'https://jpa.sysu.edu.cn/docs/20091207154349000105.pdf',
           ),
         },
         {
           label: '专栏导语（本地）',
-          link: '/jpa/jpa-research-methods-local',
-          pdfUrl: '/pdf/jpa-research-methods.pdf',
+          link: '/starpdf/jpa/jpa-research-methods-local',
+          pdfUrl: '/starpdf/pdf/jpa-research-methods.pdf',
         },
       ],
     },
@@ -67,8 +67,8 @@ export const siteInfo: SiteInfo = {
       items: [
         {
           label: 'plain-text-to-pdf',
-          link: '/astro-emit-asset/plain-text-to-pdf',
-          pdfUrl: '/pdf/plain-text-to-pdf.pdf',
+          link: '/starpdf/astro-emit-asset/plain-text-to-pdf',
+          pdfUrl: '/starpdf/pdf/plain-text-to-pdf.pdf',
           textContent: protectedText,
         },
       ],

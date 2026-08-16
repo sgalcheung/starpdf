@@ -5,12 +5,12 @@ import {
 import { siteInfo, type CatalogType } from "./data/site-info";
 
 export const onRequest = defineRouteMiddleware(async (context) => {
-  const parts = context.url.pathname.split("/").filter(Boolean);
-  const [_, itemSlug] = parts;
+ const pathname = context.url.pathname;
+ const lastSegment = pathname.split('/').filter(Boolean).pop() ?? '';
 
   const starlightRoute = context.locals.starlightRoute;
 
-  renderSideBar(starlightRoute, siteInfo.catalogs, itemSlug);
+  renderSideBar(starlightRoute, siteInfo.catalogs, lastSegment);
 });
 
 function renderSideBar(

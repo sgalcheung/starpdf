@@ -6,10 +6,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "generate-types": "wrangler types",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "@astrojs/netlify": "^8.2.1",
+    "@astrojs/cloudflare": "14.2.1",
     "@astrojs/react": "^6.0.2",
     "@astrojs/starlight": "^0.41.7",
     "@types/react": "^19.1.8",
@@ -24,6 +26,9 @@
   },
   "packageManager": "pnpm@10.30.3",
   "devDependencies": {
-    "vite-plugin-static-copy": "^4.1.1"
+    "esbuild": "^0.28.2",
+    "vite": "^8.2.1",
+    "vite-plugin-static-copy": "^4.1.1",
+    "wrangler": "^4.123.0"
   }
 }

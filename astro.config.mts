@@ -1,12 +1,9 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-
 import starlight from '@astrojs/starlight';
-
-import netlify from '@astrojs/netlify';
-
 import react from '@astrojs/react';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import cloudflare from '@astrojs/cloudflare';
 
 import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -152,6 +149,8 @@ function myIntegration(options: PluginOptions): AstroIntegration {
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://sgalcheung.github.io',
+  base: '/starpdf',
   integrations: [
     myIntegration({}),
     starlight({
@@ -168,7 +167,7 @@ export default defineConfig({
     react(),
   ],
 
-  adapter: netlify(),
+  // adapter: cloudflare(),
   vite: {
     plugins: [
       viteStaticCopy({

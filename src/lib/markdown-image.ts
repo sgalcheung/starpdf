@@ -54,17 +54,19 @@ export function htmlToSvg(html: string, width = 800, height = 1200) {
 `;
 }
 
-import { chromium } from 'playwright';
+import puppeteer from 'puppeteer';
 
 export async function htmlToPdf(html: string) {
-  const browser = await chromium.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+  });
 
   try {
-    const page = await browser.newPage({
-      viewport: {
-        width: 1200,
-        height: 1600,
-      },
+    const page = await browser.newPage();
+
+    await page.setViewport({
+      width: 1200,
+      height: 1600,
     });
 
     await page.setContent(
@@ -73,7 +75,6 @@ export async function htmlToPdf(html: string) {
       <html>
         <head>
           <meta charset="UTF-8" />
-
           <style>
             @page {
               size: A4;
@@ -87,69 +88,127 @@ export async function htmlToPdf(html: string) {
             body {
               margin: 0;
               color: #222;
-              font-family:
-                "Noto Sans CJK SC",
-                "PingFang SC",
-                Arial,
-                sans-serif;
+              font-family: Arial, sans-serif;
               font-size: 16px;
               line-height: 1.8;
             }
-
-            h1 {
-              font-size: 32px;
-              margin: 0 0 24px;
-            }
-
-            h2 {
-              font-size: 24px;
-              margin: 32px 0 16px;
-            }
-
-            p {
-              margin: 0 0 16px;
-            }
-
-            img {
-              max-width: 100%;
-              height: auto;
-            }
-
-            pre {
-              padding: 16px;
-              background: #f5f5f5;
-              overflow: hidden;
-              white-space: pre-wrap;
-            }
-
-            table {
-              width: 100%;
-              border-collapse: collapse;
-            }
-
-            th,
-            td {
-              padding: 8px;
-              border: 1px solid #ddd;
-            }
           </style>
         </head>
-
-        <body>
-          ${html}
-        </body>
+        <body>${html}</body>
       </html>
-    `,
+      `,
       {
-        waitUntil: 'networkidle',
+        waitUntil: 'load',
       },
     );
 
-    return await page.pdf({
+    const pdf = await page.pdf({
       format: 'A4',
       printBackground: true,
     });
+
+    return Buffer.from(pdf);
   } finally {
     await browser.close();
   }
 }
+
+// import { chromium } from 'playwright';
+
+// export async function htmlToPdf(html: string) {
+//   const browser = await chromium.launch();
+
+//   try {
+//     const page = await browser.newPage({
+//       viewport: {
+//         width: 1200,
+//         height: 1600,
+//       },
+//     });
+
+//     await page.setContent(
+//       `
+//       <!doctype html>
+//       <html>
+//         <head>
+//           <meta charset="UTF-8" />
+
+//           <style>
+//             @page {
+//               size: A4;
+//               margin: 20mm;
+//             }
+
+//             * {
+//               box-sizing: border-box;
+//             }
+
+//             body {
+//               margin: 0;
+//               color: #222;
+//               font-family:
+//                 "Noto Sans CJK SC",
+//                 "PingFang SC",
+//                 Arial,
+//                 sans-serif;
+//               font-size: 16px;
+//               line-height: 1.8;
+//             }
+
+//             h1 {
+//               font-size: 32px;
+//               margin: 0 0 24px;
+//             }
+
+//             h2 {
+//               font-size: 24px;
+//               margin: 32px 0 16px;
+//             }
+
+//             p {
+//               margin: 0 0 16px;
+//             }
+
+//             img {
+//               max-width: 100%;
+//               height: auto;
+//             }
+
+//             pre {
+//               padding: 16px;
+//               background: #f5f5f5;
+//               overflow: hidden;
+//               white-space: pre-wrap;
+//             }
+
+//             table {
+//               width: 100%;
+//               border-collapse: collapse;
+//             }
+
+//             th,
+//             td {
+//               padding: 8px;
+//               border: 1px solid #ddd;
+//             }
+//           </style>
+//         </head>
+
+//         <body>
+//           ${html}
+//         </body>
+//       </html>
+//     `,
+//       {
+//         waitUntil: 'networkidle',
+//       },
+//     );
+
+//     return await page.pdf({
+//       format: 'A4',
+//       printBackground: true,
+//     });
+//   } finally {
+//     await browser.close();
+//   }
+// }

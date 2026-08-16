@@ -4,8 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "playwright:install": "playwright install --with-deps chromium",
-    "build": "pnpm run playwright:install && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -19,7 +18,7 @@
     "astro-emit-asset": "^0.1.4",
     "marked": "^18.0.9",
     "pdfjs-dist": "^5.3.31",
-    "playwright": "^1.62.1",
+    "puppeteer": "^25.7.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "sharp": "^0.35.3"

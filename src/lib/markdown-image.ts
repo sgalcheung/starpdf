@@ -1,7 +1,6 @@
 // src/lib/markdown-image.ts
 
 import { marked } from 'marked';
-import sharp from 'sharp';
 
 function htmlToXml(html: string): string {
   return html.replace(

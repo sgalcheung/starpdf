@@ -152,3 +152,44 @@ export async function htmlToPdf(html: string) {
     await browser.close();
   }
 }
+
+import path from 'node:path';
+export interface UrlResource {
+  url: string;
+  buffer: Buffer;
+  name: string;
+  filename: string;
+  extension: string;
+  mimeType: string;
+  size: number;
+}
+export async function resourceFromUrl(url: string): Promise<UrlResource> {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch ${url}: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const buffer = Buffer.from(await response.arrayBuffer());
+
+  const pathname = new URL(url).pathname;
+  const filename = path.basename(pathname);
+  const extension = path.extname(filename).toLowerCase();
+  const name = path.basename(filename, extension);
+
+  const mimeType =
+    response.headers.get('content-type')?.split(';')[0] ??
+    'application/octet-stream';
+
+  return {
+    url,
+    buffer,
+    filename,
+    name,
+    extension,
+    mimeType,
+    size: buffer.length,
+  };
+}

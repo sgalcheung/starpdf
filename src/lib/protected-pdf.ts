@@ -11,9 +11,13 @@ import {
 import type { Format, ImageResult, Page, Score } from '../types';
 import { imageDimensionsFor } from '../utils/imageDimensions';
 import { renderedHtml } from '../utils/renderedHtml';
-import { render } from '../render';
 import { renderedErrorHtml } from '../utils/renderedErrorHtml';
-import { markdownToImage } from './markdown-image';
+import {
+  markdownToImage,
+  resourceFromUrl,
+  type UrlResource,
+} from './markdown-image';
+import { hashBuffer } from '../utils/bufferHelper';
 
 const PAGE_WIDTH = 595;
 const PAGE_HEIGHT = 842;
@@ -48,7 +52,7 @@ export interface GetScoreResult {
   page: Page;
   pdf?: PdfResult;
   // meta: LilypondMetadata;
-  raw: string;
+  // raw: string;
 }
 
 export interface ScoreProps
@@ -59,11 +63,13 @@ export interface ScoreProps
    * A `LilypondScore` from a `.ly`/`.ily`/`.lilypond` import
    * or a `lilypondLoader()` entry.
    */
-  content: Score;
+  content?: Score;
+  url?: string;
 }
 
 export async function getScore(
-  score: Score,
+  score?: Score,
+  url?: string,
   options: GetScoreOptions = {},
 ): Promise<GetScoreResult> {
   const state = getState();
@@ -77,76 +83,68 @@ export async function getScore(
   const crop = options.crop ?? false;
 
   try {
-    const [{ Score, page }, pdf] = await Promise.all([
-      (async (): Promise<{
-        Score: AstroComponentFactory;
-        page: Page;
-      }> => {
-        const page = await emitMyAsset({
-          title: score.assetTitle,
-          format,
-          source: score.source,
-          resolution,
-          crop,
-          sizeScale: crop ? cropScale : 1,
-          // binaryPath: state.binaryPath,
-          render: () =>
-            // render(score.source, {
-            //   format,
-            //   crop,
-            //   defaults: state.defaults,
-            //   timeout: state.timeout,
-            //   // binaryPath: state.binaryPath,
-            //   includePaths: score.includePaths,
-            //   sourceName: score.sourceName,
-            //   logger,
-            // }),
-            markdownToImage(score.source),
-        });
-        return {
-          Score: createScoreComponent({ page, alt: score.alt, format }),
-          page,
-        };
-      })(),
-      options.pdf
-        ? emitPdfAsset({
-            title: score.assetTitle,
-            source: score.source,
-            // binaryPath: state.binaryPath,
-            render: () =>
-              render(score.source, {
-                format: 'pdf',
-                crop: false,
-                defaults: state.defaults,
-                timeout: state.timeout,
-                // binaryPath: state.binaryPath,
-                includePaths: score.includePaths,
-                sourceName: score.sourceName,
-                logger,
-              }),
-          })
-        : Promise.resolve(undefined),
-    ]);
+    let source: string;
+    let resource: UrlResource | undefined;
+    let buffer: Buffer | undefined;
 
-    return { Score, page, pdf, raw: score.source };
+    if (score) {
+      source = score.source;
+    } else if (url) {
+      resource = await resourceFromUrl(url);
+
+      buffer = resource.buffer;
+      source = hashBuffer(buffer);
+    } else {
+      throw new Error('Either score or url is required.');
+    }
+
+    const page = await emitMyAsset({
+      title: score?.assetTitle ?? resource?.name ?? 'untitled',
+      format,
+      source,
+      resolution,
+      crop,
+      sizeScale: crop ? cropScale : 1,
+      // binaryPath: state.binaryPath,
+      render: async () => {
+        if (score) {
+          return markdownToImage(score.source);
+        }
+
+        if (resource) {
+          return resource.buffer;
+        }
+
+        throw new Error('Either score or url is required.');
+      },
+    });
+    return {
+      Score: createScoreComponent({ page, alt: 'score.alt', format }),
+      page,
+    };
+
+    // return { Score, page, pdf, raw: score.source };
   } catch (err) {
     if (!state.isDev) throw err;
     return {
-      Score: createErrorScoreComponent(err, score.assetTitle),
+      Score: createErrorScoreComponent(err, 'score.assetTitle'),
       page: {
         src: '',
       },
       pdf: undefined,
       // meta: score.meta,
-      raw: score.source,
+      // raw: score.source,
     };
   }
 }
 
 export const ScoreTag: AstroComponentFactory = createComponent(
   async (result, props: ScoreProps) => {
-    const { content, format, crop, ...imageProps } = props;
-    const { Score: ContentScore } = await getScore(content, { format, crop });
+    const { content, url, format, crop, ...imageProps } = props;
+    const { Score: ContentScore } = await getScore(content, url, {
+      format,
+      crop,
+    });
     return renderTemplate`${renderComponent(result, 'Score', ContentScore, imageProps)}`;
   },
 );

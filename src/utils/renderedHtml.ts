@@ -1,5 +1,8 @@
-import { addAttribute } from "astro/runtime/server/index.js";
+import { addAttribute, renderComponent, renderTemplate } from "astro/runtime/server/index.js";
 import { FORMATS, type Format, type Page } from "../types";
+import PDFViewer from '../components/PDFViewer.astro';
+import type { SSRResult } from "astro";
+import { experimental_AstroContainer } from "astro/container";
 
 function imgTag(page: Page, alt: string): string {
 	return `<img data-lilypond-image${addAttribute(page.src, "src")}${addAttribute(page.width, "width")}${addAttribute(page.height, "height")}${addAttribute(alt, "alt")}>`;
@@ -14,12 +17,12 @@ export interface RenderedHtmlOptions {
 	pageLimit?: number;
 }
 
-export function renderedHtml(
+export async function renderedHtml(
   page: Page,
   format: Format,
   alt: string,
   options: RenderedHtmlOptions = {},
-): string {
+): Promise<string> {
   const { class: className, style } = options;
   // const limitedPages =
   // 	pageLimit === undefined ? pages : pages.slice(0, pageLimit);
@@ -38,7 +41,16 @@ export function renderedHtml(
   // 	.join("")}</ol>`;
 
   if (format === FORMATS.PDF) {
-    return `<iframe${addAttribute(page.src, 'src')}${addAttribute(page.width, 'width')}${addAttribute(page.height, 'height')}></iframe>`;
+    const container = await experimental_AstroContainer.create();
+
+    return await container.renderToString(PDFViewer, {
+      props: {
+        pdfUrl: page.src,
+        class: className,
+        style,
+      },
+    });
+    // return `<iframe${addAttribute(page.src, 'src')}${addAttribute(page.width, 'width')}${addAttribute(page.height, 'height')}></iframe>`;
   }
   // TODO: hide pdf url
   return `<img data-lilypond-image${classAttr}${addAttribute(page.src, 'src')}${addAttribute(page.width, 'width')}${addAttribute(page.height, 'height')}${addAttribute(alt, 'alt')}${styleAttr}>`;

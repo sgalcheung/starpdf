@@ -164,9 +164,6 @@ export default defineConfig({
           href: 'https://github.com/sgalcheung/starlight-reader',
         },
       ],
-      components: {
-        PageTitle: './src/overrides/Empty.astro',
-      },
     }),
     react(),
   ],

@@ -25,13 +25,13 @@ export const siteInfo: SiteInfo = {
         {
           label: 'helloworld',
           link: '/getting-started/helloworld',
-          fileUrl: '/starlight-reader/content/helloworld.pdf',
+          fileUrl: 'src/content/helloworld.pdf',
         },
         {
-          label: 'compressed.tracemonkey-pldi-09',
-          link: '/getting-started/compressed.tracemonkey-pldi-09',
+          label: 'Princeton University',
+          link: '/getting-started/introduction-to-programming-systems',
           fileUrl:
-            'https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf',
+            'https://www.cs.princeton.edu/courses/archive/fall07/cos217/precepthandouts/01/helloworld.pdf',
         },
       ],
     },
@@ -46,7 +46,7 @@ export const siteInfo: SiteInfo = {
         {
           label: '专栏导语（本地）',
           link: '/jpa/jpa-research-methods-local',
-          fileUrl: '/starlight-reader/content/jpa-research-methods.pdf',
+          fileUrl: 'src/content/jpa-research-methods.pdf',
         },
       ],
     },
@@ -56,7 +56,7 @@ export const siteInfo: SiteInfo = {
         {
           label: 'plain-text-to-pdf',
           link: '/astro-emit-asset/plain-text-to-pdf',
-          fileUrl: '/starlight-reader/content/plain-text-to-pdf.txt',
+          fileUrl: 'src/content/plain-text-to-pdf.txt',
         },
       ],
     },

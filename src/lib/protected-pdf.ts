@@ -90,17 +90,6 @@ export async function getScore(
       source = score.source;
     } else if (url) {
       resource = await resourceFromUrl(url);
-      if (resource.extension == '.txt') {
-        const txtToPdf = await generateTextPdfAsset(
-          resource.name,
-          resource.name,
-          resource.buffer.toString(),
-        );
-
-        const pdfUrl = new URL(txtToPdf, url).toString();
-        resource = await resourceFromUrl(pdfUrl);
-      }
-
       buffer = resource.buffer;
       source = hashBuffer(buffer);
     } else {
@@ -120,6 +109,13 @@ export async function getScore(
         }
 
         if (resource) {
+          if (resource.extension == '.txt') {
+            return generateTextPdfAsset(
+              resource.name,
+              resource.name,
+              resource.buffer.toString(),
+            );
+          }
           return resource.buffer;
         }
 
@@ -307,22 +303,22 @@ function buildMinimalPdf({
   return Buffer.from(pdf, 'latin1');
 }
 
-export async function generateTextPdfAsset(
+export function generateTextPdfAsset(
   assetKey: string,
   title: string,
   content: string,
-): Promise<string> {
-  const safeKey = toSafeSegment(assetKey);
+) {
+  // const safeKey = toSafeSegment(assetKey);
 
-  const { src } = await emitAsset(
-    `${safeKey}.pdf`,
-    [safeKey, title, content],
-    () => ({
-      data: buildMinimalPdf({ title, content }),
-    }),
-  );
-
-  return src;
+  // const { src } = await emitAsset(
+  //   `${safeKey}.pdf`,
+  //   [safeKey, title, content],
+  //   () => ({
+  //     data: buildMinimalPdf({ title, content }),
+  //   }),
+  // );
+  // return src;
+  return buildMinimalPdf({ title, content });
 }
 
 export interface EmitPdfAssetOptions {

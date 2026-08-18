@@ -163,25 +163,49 @@ export interface UrlResource {
   mimeType: string;
   size: number;
 }
-export async function resourceFromUrl(url: string): Promise<UrlResource> {
-  const response = await fetch(url);
+import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch ${url}: ${response.status} ${response.statusText}`,
-    );
+export async function resourceFromUrl(url: string): Promise<UrlResource> {
+  const isRemote = /^https?:\/\//i.test(url);
+
+  let buffer: Buffer;
+  let filename: string;
+  let mimeType: string;
+
+  if (isRemote) {
+    // 远程资源
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch ${url}: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    buffer = Buffer.from(await response.arrayBuffer());
+
+    const pathname = new URL(url).pathname;
+    filename = path.basename(pathname);
+
+    mimeType =
+      response.headers.get('content-type')?.split(';')[0] ??
+      'application/octet-stream';
+  } else {
+    // 本地资源
+    const filePath = url.startsWith('file://')
+      ? fileURLToPath(url)
+      : path.resolve(url);
+
+    buffer = await fs.readFile(filePath);
+
+    filename = path.basename(filePath);
+
+    mimeType = getMimeType(path.extname(filename));
   }
 
-  const buffer = Buffer.from(await response.arrayBuffer());
-
-  const pathname = new URL(url).pathname;
-  const filename = path.basename(pathname);
   const extension = path.extname(filename).toLowerCase();
   const name = path.basename(filename, extension);
-
-  const mimeType =
-    response.headers.get('content-type')?.split(';')[0] ??
-    'application/octet-stream';
 
   return {
     url,
@@ -192,4 +216,23 @@ export async function resourceFromUrl(url: string): Promise<UrlResource> {
     mimeType,
     size: buffer.length,
   };
+}
+
+function getMimeType(extension: string): string {
+  const mimeTypes: Record<string, string> = {
+    '.pdf': 'application/pdf',
+    '.epub': 'application/epub+zip',
+    '.txt': 'text/plain',
+    '.md': 'text/markdown',
+    '.html': 'text/html',
+    '.json': 'application/json',
+    '.xml': 'application/xml',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+  };
+
+  return mimeTypes[extension.toLowerCase()] ?? 'application/octet-stream';
 }

@@ -90,6 +90,16 @@ export async function getScore(
       source = score.source;
     } else if (url) {
       resource = await resourceFromUrl(url);
+      if (resource.extension == '.txt') {
+        const txtToPdf = await generateTextPdfAsset(
+          resource.name,
+          resource.name,
+          resource.buffer.toString(),
+        );
+
+        const pdfUrl = new URL(txtToPdf, url).toString();
+        resource = await resourceFromUrl(pdfUrl);
+      }
 
       buffer = resource.buffer;
       source = hashBuffer(buffer);
@@ -120,7 +130,6 @@ export async function getScore(
       Score: createScoreComponent({ page, alt: 'score.alt', format }),
       page,
     };
-
   } catch (err) {
     if (!state.isDev) throw err;
     return {
@@ -308,7 +317,7 @@ export async function generateTextPdfAsset(
   const { src } = await emitAsset(
     `${safeKey}.pdf`,
     [safeKey, title, content],
-    async () => ({
+    () => ({
       data: buildMinimalPdf({ title, content }),
     }),
   );

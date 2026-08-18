@@ -1,28 +1,17 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { siteInfo, type CatalogItem } from '../data/site-info';
-import { generateTextPdfAsset, getScore, ScoreTag } from '../lib/protected-pdf';
+import { ScoreTag } from '../lib/protected-pdf';
 import 'pdfjs-dist/web/pdf_viewer.css';
-
-import readMe from '../../README.md';
-import PDFViewer from '../components/PDFViewer.astro';
 
 export async function getStaticPaths() {
   const pages = await Promise.all(
     siteInfo.catalogs.map(async (catalog) =>
       Promise.all(
         catalog.items.map(async (item) => {
-          const pdfUrl = item.textContent
-            ? await generateTextPdfAsset(
-                item.link.split('/').filter(Boolean).at(-1) ?? item.label,
-                item.label,
-                item.textContent,
-              )
-            : item.pdfUrl;
-
           return {
             params: { catalogItemSlug: item.link },
-            props: { item, pdfUrl },
+            props: { item },
           };
         }),
       ),
@@ -32,11 +21,9 @@ export async function getStaticPaths() {
   return pages.flat();
 }
 
-const { item, pdfUrl } = Astro.props as { item: CatalogItem; pdfUrl?: string };
-const resolvedPdfUrl = pdfUrl ?? item.pdfUrl;
+const { item } = Astro.props as { item: CatalogItem };
 
-// const result = await getScore(resolvedPdfUrl, { pdf: true });
-const pdfURL = new URL(resolvedPdfUrl, Astro.url);
+const pdfURL = new URL(item.fileUrl, Astro.url);
 ---
 
 <StarlightPage frontmatter={{ title: item.label, tableOfContents: false }}>

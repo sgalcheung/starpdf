@@ -73,7 +73,6 @@ export async function getScore(
   options: GetScoreOptions = {},
 ): Promise<GetScoreResult> {
   const state = getState();
-  const { logger } = state;
   const {
     resolution,
     cropScale,

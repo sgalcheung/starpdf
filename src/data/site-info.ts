@@ -51,9 +51,7 @@ export const siteInfo: SiteInfo = {
         {
           label: '专栏导语',
           link: '/jpa/jpa-research-methods',
-          pdfUrl: toProxyPdfUrl(
-            'https://jpa.sysu.edu.cn/docs/20091207154349000105.pdf',
-          ),
+          pdfUrl: 'https://jpa.sysu.edu.cn/docs/20091207154349000105.pdf',
         },
         {
           label: '专栏导语（本地）',

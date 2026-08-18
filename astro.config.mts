@@ -156,6 +156,7 @@ export default defineConfig({
     starlight({
       title: 'Starlight PDF Viewer',
       routeMiddleware: './src/routeMiddleware.ts',
+      pagefind: false,
       social: [
         {
           icon: 'github',
@@ -163,6 +164,9 @@ export default defineConfig({
           href: 'https://github.com/sgalcheung/starpdf',
         },
       ],
+      components: {
+        PageTitle: './src/overrides/Empty.astro',
+      },
     }),
     react(),
   ],

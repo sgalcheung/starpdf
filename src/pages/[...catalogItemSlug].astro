@@ -7,8 +7,6 @@ import 'pdfjs-dist/web/pdf_viewer.css';
 import readMe from '../../README.md';
 import PDFViewer from '../components/PDFViewer.astro';
 
-const isRemotePdfUrl = (pdfUrl: string) => /^https?:\/\//i.test(pdfUrl);
-
 export async function getStaticPaths() {
   const pages = await Promise.all(
     siteInfo.catalogs.map(async (catalog) =>
@@ -34,23 +32,15 @@ export async function getStaticPaths() {
   return pages.flat();
 }
 
-function resolvePdfUrl(pdfUrl: string) {
-  if (isRemotePdfUrl(pdfUrl)) {
-    return pdfUrl;
-  }
-
-  return pdfUrl;
-}
-
 const { item, pdfUrl } = Astro.props as { item: CatalogItem; pdfUrl?: string };
-const resolvedPdfUrl = resolvePdfUrl(pdfUrl ?? item.pdfUrl);
+const resolvedPdfUrl = pdfUrl ?? item.pdfUrl;
 
 // const result = await getScore(resolvedPdfUrl, { pdf: true });
 const pdfURL = new URL(resolvedPdfUrl, Astro.url);
 ---
 
-<StarlightPage frontmatter={{ title: item.label }}>
+<StarlightPage frontmatter={{ title: item.label, tableOfContents: false }}>
   <!-- <ScoreTag content={readMe} format='pdf' class='w-full h-full' /> -->
-  <!-- <ScoreTag url={pdfURL} format='pdf' class='w-full h-full' /> -->
-  <PDFViewer pdfUrl={resolvedPdfUrl} />
+  <ScoreTag url={pdfURL} format='pdf' class='w-full h-full' />
+  <!-- <PDFViewer pdfUrl={resolvedPdfUrl} /> -->
 </StarlightPage>

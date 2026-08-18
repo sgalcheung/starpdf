@@ -28,10 +28,10 @@ export const siteInfo: SiteInfo = {
           fileUrl: 'src/content/helloworld.pdf',
         },
         {
-          label: 'Princeton University',
-          link: '/getting-started/introduction-to-programming-systems',
+          label: 'Sample PDF',
+          link: '/getting-started/sample-pdf',
           fileUrl:
-            'https://www.cs.princeton.edu/courses/archive/fall07/cos217/precepthandouts/01/helloworld.pdf',
+            'https://ontheline.trincoll.edu/images/bookdown/sample-local-pdf.pdf',
         },
       ],
     },

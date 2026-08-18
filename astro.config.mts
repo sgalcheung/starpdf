@@ -150,7 +150,7 @@ function myIntegration(options: PluginOptions): AstroIntegration {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://sgalcheung.github.io',
-  base: '/starpdf',
+  base: '/starlight-reader',
   integrations: [
     myIntegration({}),
     starlight({
@@ -161,7 +161,7 @@ export default defineConfig({
         {
           icon: 'github',
           label: 'GitLab',
-          href: 'https://github.com/sgalcheung/starpdf',
+          href: 'https://github.com/sgalcheung/starlight-reader',
         },
       ],
       components: {

@@ -104,7 +104,6 @@ export async function getScore(
       resolution,
       crop,
       sizeScale: crop ? cropScale : 1,
-      // binaryPath: state.binaryPath,
       render: async () => {
         if (score) {
           return markdownToImage(score.source);
@@ -122,7 +121,6 @@ export async function getScore(
       page,
     };
 
-    // return { Score, page, pdf, raw: score.source };
   } catch (err) {
     if (!state.isDev) throw err;
     return {

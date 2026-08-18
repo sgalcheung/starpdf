@@ -34,7 +34,7 @@ export const siteInfo: SiteInfo = {
         {
           label: 'helloworld',
           link: '/getting-started/helloworld',
-          pdfUrl: '/starpdf/pdf/helloworld.pdf',
+          pdfUrl: '/starlight-reader/pdf/helloworld.pdf',
         },
         {
           label: 'compressed.tracemonkey-pldi-09',
@@ -56,7 +56,7 @@ export const siteInfo: SiteInfo = {
         {
           label: '专栏导语（本地）',
           link: '/jpa/jpa-research-methods-local',
-          pdfUrl: '/starpdf/pdf/jpa-research-methods.pdf',
+          pdfUrl: '/starlight-reader/pdf/jpa-research-methods.pdf',
         },
       ],
     },
@@ -66,7 +66,7 @@ export const siteInfo: SiteInfo = {
         {
           label: 'plain-text-to-pdf',
           link: '/astro-emit-asset/plain-text-to-pdf',
-          pdfUrl: '/starpdf/pdf/plain-text-to-pdf.pdf',
+          pdfUrl: '/starlight-reader/pdf/plain-text-to-pdf.pdf',
           textContent: protectedText,
         },
       ],

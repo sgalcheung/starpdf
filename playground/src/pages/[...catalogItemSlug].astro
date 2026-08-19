@@ -1,25 +1,25 @@
 ---
-import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-import { type CatalogItem, siteInfo } from '../data/site-info';
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { type CatalogItem, siteInfo } from "../data/site-info";
 // import { ScoreTag } from '../lib/protected-pdf';
-import 'pdfjs-dist/web/pdf_viewer.css';
-import { DocumentViewer } from 'astro-reader';
+import "pdfjs-dist/web/pdf_viewer.css";
+import { DocumentViewer } from "astro-reader/ui";
 
 export async function getStaticPaths() {
-  const pages = await Promise.all(
-    siteInfo.catalogs.map(async (catalog) =>
-      Promise.all(
-        catalog.items.map(async (item) => {
-          return {
-            params: { catalogItemSlug: item.link },
-            props: { item },
-          };
-        }),
-      ),
-    ),
-  );
+	const pages = await Promise.all(
+		siteInfo.catalogs.map(async (catalog) =>
+			Promise.all(
+				catalog.items.map(async (item) => {
+					return {
+						params: { catalogItemSlug: item.link },
+						props: { item },
+					};
+				}),
+			),
+		),
+	);
 
-  return pages.flat();
+	return pages.flat();
 }
 
 const { item } = Astro.props as { item: CatalogItem };
@@ -29,7 +29,7 @@ const { item } = Astro.props as { item: CatalogItem };
   <!-- <ScoreTag content={readMe} format='pdf' class='w-full h-full' /> -->
   <!-- <ScoreTag url={item.fileUrl} format='pdf' class='w-full h-full' /> -->
   <!-- <PDFViewer pdfUrl={resolvedPdfUrl} /> -->
-  <DocumentViewer url={item.fileUrl} format='pdf' class='w-full h-full' />
+  <DocumentViewer url={item.fileUrl} format='pdf' />
 </StarlightPage>
 
 <style>
@@ -43,7 +43,3 @@ const { item } = Astro.props as { item: CatalogItem };
     padding-top: 0 !important;
   }
 </style>
-
-<!-- <script>
-  import '../components/PDFViewer.ts';
-</script> -->

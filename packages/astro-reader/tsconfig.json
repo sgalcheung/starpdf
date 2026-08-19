@@ -1,0 +1,9 @@
+{
+	"extends": "astro/tsconfigs/strictest",
+	"compilerOptions": {
+		"module": "NodeNext",
+		"moduleResolution": "Node16",
+		"jsx": "preserve"
+	},
+	"exclude": ["dist"]
+}

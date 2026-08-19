@@ -1,0 +1,52 @@
+{
+	"name": "astro-reader",
+	"version": "0.0.0",
+	"description": "A lightweight PDF reader built with Astro and Starlight.",
+	"type": "module",
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+    "./ui":"./src/ui.ts",
+		"./DocumentViewer": {
+			"types": "./dist/DocumentViewer.d.ts",
+			"import": "./dist/DocumentViewer.js"
+		}
+	},
+	"files": [
+		"dist",
+    "src"
+	],
+	"scripts": {
+		"dev": "tsdown --watch",
+		"build": "tsdown",
+		"prepublishOnly": "pnpm build"
+	},
+	"keywords": [
+		"withastro",
+		"utils"
+	],
+	"author": "Sgal Cheung",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sgalcheung/astro-reader.git"
+	},
+	"bugs": "https://github.com/sgalcheung/astro-reader.git",
+	"homepage": "https://sgalcheung.github.io/astro-reader",
+	"license": "MIT",
+	"peerDependencies": {
+		"astro": "^6.0.0"
+	},
+	"dependencies": {
+		"astro-emit-asset": "^0.1.4",
+		"marked": "^18.0.9",
+		"pdfjs-dist": "^5.7.284",
+		"playwright": "^1.62.1"
+	},
+	"devDependencies": {
+		"tsdown": "0.22.14",
+		"typescript": "^7.0.2"
+	}
+}

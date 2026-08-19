@@ -1,0 +1,43 @@
+// @ts-check
+
+import react from "@astrojs/react";
+import starlight from "@astrojs/starlight";
+import { defineConfig } from "astro/config";
+import astroReader from "astro-reader";
+import { viteStaticCopy } from "vite-plugin-static-copy";
+
+// https://astro.build/config
+export default defineConfig({
+	site: "https://sgalcheung.github.io",
+	base: "/astro-reader",
+	integrations: [
+		astroReader(),
+		starlight({
+			title: "Starlight PDF Viewer",
+			routeMiddleware: "./src/routeMiddleware.ts",
+			pagefind: false,
+			social: [
+				{
+					icon: "github",
+					label: "GitLab",
+					href: "https://github.com/sgalcheung/astro-reader",
+				},
+			],
+		}),
+		react(),
+	],
+
+	vite: {
+		plugins: [
+			viteStaticCopy({
+				targets: [
+					{
+						src: "node_modules/pdfjs-dist/cmaps/**/*",
+						dest: "cmaps",
+						rename: { stripBase: 3 },
+					},
+				],
+			}),
+		],
+	},
+});

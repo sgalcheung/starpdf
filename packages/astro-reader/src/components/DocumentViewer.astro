@@ -1,0 +1,27 @@
+---
+import {
+  type DocumentViewer,
+  getDocumentViewer,
+} from '../server/DocumentViewer.js';
+import type { Format } from '../types.js';
+import PDFViewer from './PDFViewer.astro';
+import SVGViewer from './SVGViewer.astro';
+
+interface Props {
+  // import file
+  content: DocumentViewer;
+
+  // remote file url
+  url?: string;
+
+  // output file format
+  // default is svg
+  format?: Format;
+}
+
+const { content, url, format } = Astro.props;
+
+const page = await getDocumentViewer(content, url, format);
+---
+
+{format === 'pdf' ? <PDFViewer page={page} /> : <SVGViewer page={page} />}

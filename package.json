@@ -1,34 +1,23 @@
 {
-  "name": "starlight-reader",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "generate-types": "wrangler types",
-    "deploy": "wrangler deploy"
-  },
-  "dependencies": {
-    "@astrojs/cloudflare": "14.2.1",
-    "@astrojs/react": "^6.0.2",
-    "@astrojs/starlight": "^0.41.7",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "astro": "^7.2.2",
-    "astro-emit-asset": "^0.1.4",
-    "marked": "^18.0.9",
-    "pdfjs-dist": "^5.3.31",
-    "playwright": "^1.62.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
-  },
-  "packageManager": "pnpm@10.30.3",
-  "devDependencies": {
-    "esbuild": "^0.28.2",
-    "vite": "^8.2.1",
-    "vite-plugin-static-copy": "^4.1.1",
-    "wrangler": "^4.123.0"
-  }
+	"name": "root",
+	"private": true,
+	"packageManager": "pnpm@11.22.0",
+	"engines": {
+		"node": ">=22.12.0"
+	},
+	"scripts": {
+		"package:dev": "pnpm --filter astro-reader dev",
+		"playground:dev": "pnpm --filter playground dev",
+		"dev": "pnpm --stream -r -parallel dev",
+		"changeset": "changeset",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write",
+		"ci-version": "changeset version && pnpm install --no-frozen-lockfile",
+		"ci-publish": "changeset publish"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.5.8",
+		"@changesets/cli": "3.0.0",
+		"@changesets/changelog-github": "1.0.0"
+	}
 }

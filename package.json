@@ -17,7 +17,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.8",
+		"@changesets/changelog-github": "1.0.0",
 		"@changesets/cli": "3.0.0",
-		"@changesets/changelog-github": "1.0.0"
+		"@playwright/test": "^1.62.1"
 	}
 }

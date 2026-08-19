@@ -33,11 +33,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Playwright Chromium
-        run: pnpm exec playwright install chromium
+        run: pnpm exec playwright install --with-deps chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - name: Build
-        run: pnpm build
+      - name: Build pacakge
+        run: pnpm pnpm --filter astro-reader build
+      - name: Build playground
+        run: pnpm pnpm --filter playground build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4

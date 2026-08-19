@@ -42,7 +42,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - name: Build pacakge
+      - name: Build package
         run: pnpm pnpm --filter astro-reader build
       - name: Build playground
         run: pnpm pnpm --filter playground build

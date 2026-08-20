@@ -1,11 +1,11 @@
 // src/lib/markdown-image.ts
 
-import { marked } from "marked";
+import { marked } from 'marked';
 
 function htmlToXml(html: string): string {
 	return html.replace(
 		/<(img|br|hr|input|meta|link|source|area|base|col|embed|param|track|wbr)(\s[^>]*)?>/gi,
-		"<$1$2 />",
+		'<$1$2 />',
 	);
 }
 
@@ -53,7 +53,7 @@ export function htmlToSvg(html: string, width = 800, height = 1200) {
 `;
 }
 
-import { chromium } from "playwright";
+import { chromium } from 'playwright';
 
 export async function htmlToPdf(html: string) {
 	const browser = await chromium.launch();
@@ -140,12 +140,12 @@ export async function htmlToPdf(html: string) {
       </html>
     `,
 			{
-				waitUntil: "networkidle",
+				waitUntil: 'networkidle',
 			},
 		);
 
 		return await page.pdf({
-			format: "A4",
+			format: 'A4',
 			printBackground: true,
 		});
 	} finally {
@@ -153,7 +153,7 @@ export async function htmlToPdf(html: string) {
 	}
 }
 
-import path from "node:path";
+import path from 'node:path';
 export interface UrlResource {
 	url: string;
 	buffer: Buffer;
@@ -164,8 +164,8 @@ export interface UrlResource {
 	size: number;
 }
 
-import fs from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 
 export async function resourceFromUrl(url: string): Promise<UrlResource> {
 	const isRemote = /^https?:\/\//i.test(url);
@@ -190,11 +190,11 @@ export async function resourceFromUrl(url: string): Promise<UrlResource> {
 		filename = path.basename(pathname);
 
 		mimeType =
-			response.headers.get("content-type")?.split(";")[0] ??
-			"application/octet-stream";
+			response.headers.get('content-type')?.split(';')[0] ??
+			'application/octet-stream';
 	} else {
 		// 本地资源
-		const filePath = url.startsWith("file://")
+		const filePath = url.startsWith('file://')
 			? fileURLToPath(url)
 			: path.resolve(url);
 
@@ -221,19 +221,19 @@ export async function resourceFromUrl(url: string): Promise<UrlResource> {
 
 function getMimeType(extension: string): string {
 	const mimeTypes: Record<string, string> = {
-		".pdf": "application/pdf",
-		".epub": "application/epub+zip",
-		".txt": "text/plain",
-		".md": "text/markdown",
-		".html": "text/html",
-		".json": "application/json",
-		".xml": "application/xml",
-		".jpg": "image/jpeg",
-		".jpeg": "image/jpeg",
-		".png": "image/png",
-		".gif": "image/gif",
-		".webp": "image/webp",
+		'.pdf': 'application/pdf',
+		'.epub': 'application/epub+zip',
+		'.txt': 'text/plain',
+		'.md': 'text/markdown',
+		'.html': 'text/html',
+		'.json': 'application/json',
+		'.xml': 'application/xml',
+		'.jpg': 'image/jpeg',
+		'.jpeg': 'image/jpeg',
+		'.png': 'image/png',
+		'.gif': 'image/gif',
+		'.webp': 'image/webp',
 	};
 
-	return mimeTypes[extension.toLowerCase()] ?? "application/octet-stream";
+	return mimeTypes[extension.toLowerCase()] ?? 'application/octet-stream';
 }

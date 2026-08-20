@@ -1,5 +1,5 @@
-import { basename } from "node:path";
-import { fileURLToPath } from "node:url";
+import { basename } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /**
  * Derives `render()`'s `sourceName` from the source file's path or URL, so
@@ -10,6 +10,6 @@ export function sourceNameFor(
 	source: string | URL | null | undefined,
 ): string | undefined {
 	if (!source) return undefined;
-	const path = typeof source === "string" ? source : fileURLToPath(source);
+	const path = typeof source === 'string' ? source : fileURLToPath(source);
 	return basename(path);
 }

@@ -45,16 +45,16 @@ yarn add astro-reader
 2. Add the integration to your astro config
 
 ```diff
-+import integration from "astro-reader";
++import astroReader from "astro-reader";
 
 export default defineConfig({
   integrations: [
-+    integration(),
++    astroReader(),
   ],
 });
 ```
 
-### Configuration
+### Usage
 
 TODO:configuration
 

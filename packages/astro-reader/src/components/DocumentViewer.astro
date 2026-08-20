@@ -1,27 +1,39 @@
 ---
 import {
-  type DocumentViewer,
-  getDocumentViewer,
+	type DocumentResource,
+	fromLocalPdf,
+	fromPathOrUrl,
+	fromTextContent,
+	getDocumentViewer,
 } from '../server/DocumentViewer.js';
-import type { Format } from '../types.js';
 import PDFViewer from './PDFViewer.astro';
 import SVGViewer from './SVGViewer.astro';
 
-interface Props {
-  // import file
-  content?: DocumentViewer;
-
-  // remote file url
-  url?: string;
-
-  // output file format
-  // default is svg
-  format?: Format;
+export interface DocumentViewerProps {
+	content?: unknown;
+	url?: string;
+	format?: 'pdf' | 'svg';
+	// Allows passing other attributes to PDFViewer/SVGViewer (such as class, style, alt etc.)
+	[key: string]: unknown;
 }
 
-const { content, url, format } = Astro.props;
+const { format = 'pdf', content, url, ...restProps } = Astro.props;
 
-const page = await getDocumentViewer(content, url, format);
+let resource: DocumentResource;
+
+if (content) {
+	if ('isLocalPdf' in content && content.isLocalPdf) {
+		resource = fromLocalPdf(content);
+	} else {
+		resource = fromTextContent(content);
+	}
+} else if (url) {
+	resource = await fromPathOrUrl(url);
+} else {
+	throw new Error('<DocumentViewer> requires either `content` or `url` prop.');
+}
+
+const page = await getDocumentViewer(resource, format);
 ---
 
 {format === 'pdf' ? <PDFViewer page={page} /> : <SVGViewer page={page} />}

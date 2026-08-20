@@ -1,10 +1,10 @@
-import type { AstroIntegrationLogger } from "astro";
-import type { Metadata } from "../../../packages/astro-reader/src/utils/metadata";
+import type { AstroIntegrationLogger } from 'astro';
+import type { Metadata } from '../../../packages/astro-reader/src/utils/metadata';
 
 export const FORMATS = {
-	PNG: "png",
-	SVG: "svg",
-	PDF: "pdf",
+	PNG: 'png',
+	SVG: 'svg',
+	PDF: 'pdf',
 } as const;
 
 export type Format = (typeof FORMATS)[keyof typeof FORMATS];
@@ -44,7 +44,7 @@ export interface Defaults {
  * The subset of `LilypondDefaults` that `render()` itself reads. `version`
  * and `format` are resolved by the caller before reaching `render()`.
  */
-export type RenderDefaults = Omit<Defaults, "format">;
+export type RenderDefaults = Omit<Defaults, 'format'>;
 
 export interface InternalRenderOptions {
 	/**
@@ -96,12 +96,12 @@ export interface InternalRenderOptions {
 	/**
 	 * Warning and failure logging from LilyPond.
 	 */
-	logger: Pick<AstroIntegrationLogger, "warn" | "error">;
+	logger: Pick<AstroIntegrationLogger, 'warn' | 'error'>;
 }
 
 const defaultDefaults: Required<Defaults> = {
 	// version: '2.26.0',
-	format: "svg",
+	format: 'svg',
 	resolution: 144,
 	cropScale: 1.5,
 };
@@ -109,7 +109,7 @@ const defaultDefaults: Required<Defaults> = {
 export const defaultOptions: Required<
 	Omit<
 		InternalRenderOptions,
-		"includePaths" | "sourceName" | "defaults" | "logger"
+		'includePaths' | 'sourceName' | 'defaults' | 'logger'
 	>
 > & { defaults: Required<Defaults> } = {
 	format: defaultDefaults.format,

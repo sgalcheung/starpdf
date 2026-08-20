@@ -13,3 +13,4 @@ To see how to get started, check out the [package README](./packages/astro-reade
 ---
 
 Created using [astro-integration-template](https://github.com/florian-lefebvre/astro-integration-template).
+Inspired by [astro-lilypond](https://lilypond.ky.fyi/)

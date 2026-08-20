@@ -1,14 +1,14 @@
 import {
 	defineRouteMiddleware,
 	type StarlightRouteData,
-} from "@astrojs/starlight/route-data";
-import { type CatalogType, siteInfo } from "./data/site-info";
+} from '@astrojs/starlight/route-data';
+import { type CatalogType, siteInfo } from './data/site-info';
 
 export const onRequest = defineRouteMiddleware(async (context) => {
 	const pathname = context.url.pathname;
-	const pathSegments = pathname.split("/").filter(Boolean);
-	const lastSegment = pathSegments.at(-1) ?? "";
-	const prefix = pathSegments.at(0) ?? "";
+	const pathSegments = pathname.split('/').filter(Boolean);
+	const lastSegment = pathSegments.at(-1) ?? '';
+	const prefix = pathSegments.at(0) ?? '';
 
 	const starlightRoute = context.locals.starlightRoute;
 
@@ -22,10 +22,10 @@ function renderSideBar(
 	prefix?: string,
 ) {
 	starlightRoute.sidebar = catalogs.map((catalog) => ({
-		type: "group",
+		type: 'group',
 		label: catalog.label,
 		entries: catalog.items.map((item) => ({
-			type: "link",
+			type: 'link',
 			label: item.label,
 			href: prefix ? `/${prefix}${item.link}` : item.link,
 			isCurrent: item.link.endsWith(article_id),

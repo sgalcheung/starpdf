@@ -1,4 +1,4 @@
-import type { Format } from "../types.ts";
+import type { Format } from '../types.ts';
 
 export interface ImageDimensions {
 	width: number;
@@ -10,7 +10,7 @@ const PNG_SIGNATURE = Buffer.from([
 ]);
 
 function svgDimensions(buf: Buffer): ImageDimensions | undefined {
-	const openTag = buf.toString("utf8").match(/<svg\b[^>]*>/)?.[0];
+	const openTag = buf.toString('utf8').match(/<svg\b[^>]*>/)?.[0];
 	if (!openTag) return undefined;
 
 	const width = openTag.match(/\bwidth="([\d.]+)"/)?.[1];
@@ -38,5 +38,5 @@ export function imageDimensionsFor(
 	format: Format,
 	buf: Buffer,
 ): ImageDimensions | undefined {
-	return format === "svg" ? svgDimensions(buf) : pngDimensions(buf);
+	return format === 'svg' ? svgDimensions(buf) : pngDimensions(buf);
 }

@@ -1,5 +1,5 @@
-import type { AstroIntegrationLogger } from "astro";
-import type { Defaults } from "./types";
+import type { AstroIntegrationLogger } from 'astro';
+import type { Defaults } from './types';
 // import type { LilypondDefaults } from "./render.js";
 
 export interface State {
@@ -7,11 +7,11 @@ export interface State {
 	defaults: Defaults | undefined;
 	timeout: number | undefined;
 	isDev: boolean;
-	logger: Pick<AstroIntegrationLogger, "warn" | "error">;
+	logger: Pick<AstroIntegrationLogger, 'warn' | 'error'>;
 	includePaths: string[];
 }
 
-const KEY = "astro-pdf:state";
+const KEY = 'astro-pdf:state';
 const store = globalThis as unknown as Record<string, State | undefined>;
 
 export function setState(state: State): void {
@@ -21,7 +21,7 @@ export function setState(state: State): void {
 export function getState(): State {
 	const state = store[KEY];
 	if (!state) {
-		throw new Error("astro-pdf: please initialize state.");
+		throw new Error('astro-pdf: please initialize state.');
 	}
 	return state;
 }

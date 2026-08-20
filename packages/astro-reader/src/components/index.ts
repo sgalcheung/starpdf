@@ -1,1 +1,1 @@
-export { default as DocumentViewer } from "./DocumentViewer.astro";
+export { default as DocumentViewer } from './DocumentViewer.astro';

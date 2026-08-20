@@ -1,28 +1,31 @@
-import type { AstroConfig, AstroIntegration } from "astro";
-import emitAssetIntegration from "astro-emit-asset";
-import type { DocumentViewer } from "./server/DocumentViewer.ts";
-import { setState } from "./state.ts";
-import { EXTENSIONS } from "./types.ts";
-import { altTextFor } from "./utils/altTextFor.ts";
-import { toMetadata } from "./utils/metadata.ts";
-import { parseLyHeaderFields } from "./utils/parseLyHeader.ts";
-import { sourceNameFor } from "./utils/sourceNameFor.ts";
-import { titleFor } from "./utils/titleFor.ts";
-import { typeDeclarationsFor } from "./utils/typeDeclarationsFor.ts";
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import type { AstroConfig, AstroIntegration } from 'astro';
+import emitAssetIntegration from 'astro-emit-asset';
+import type { DocumentViewer } from './server/DocumentViewer.ts';
+import { setState } from './state.ts';
+import { EXTENSIONS } from './types.ts';
+import { altTextFor } from './utils/altTextFor.ts';
+import { hashBuffer } from './utils/bufferHelper.ts';
+import { toMetadata } from './utils/metadata.ts';
+import { parseLyHeaderFields } from './utils/parseLyHeader.ts';
+import { sourceNameFor } from './utils/sourceNameFor.ts';
+import { titleFor } from './utils/titleFor.ts';
+import { typeDeclarationsFor } from './utils/typeDeclarationsFor.ts';
 
 export function astroReader(): AstroIntegration {
 	return {
-		name: "astro-reader",
+		name: 'astro-reader',
 		hooks: {
-			"astro:config:setup": async ({
+			'astro:config:setup': async ({
 				config,
 				command,
 				updateConfig,
 				logger,
 			}) => {
-				const isDev = command === "dev";
+				const isDev = command === 'dev';
 				setState({
-					binaryPath: "", // binaryPath,
+					binaryPath: '', // binaryPath,
 					defaults: undefined, // options.defaults,
 					timeout: undefined,
 					isDev,
@@ -39,12 +42,12 @@ export function astroReader(): AstroIntegration {
 				// const existingProcessor = config.markdown?.processor;
 
 				// if (existingProcessor?.name === "satteri") {
-					// TODO
-					// injectMarkdownPlugin(
-					//   existingProcessor,
-					//   'mdastPlugins',
-					//   satteriPlugin(options),
-					// );
+				// TODO
+				// injectMarkdownPlugin(
+				//   existingProcessor,
+				//   'mdastPlugins',
+				//   satteriPlugin(options),
+				// );
 				// 	updateConfig({ markdown: { processor: existingProcessor } });
 				// 	logger?.info("Registered Sätteri mdast plugin");
 				// 	return;
@@ -68,39 +71,43 @@ export function astroReader(): AstroIntegration {
 				// );
 			},
 
-			"astro:config:done": ({ injectTypes }) => {
+			'astro:config:done': ({ injectTypes }) => {
 				injectTypes({
-          filename: 'astro-reader-types.d.ts',
-          content: typeDeclarationsFor(EXTENSIONS),
-        });
+					filename: 'astro-reader-types.d.ts',
+					content: typeDeclarationsFor(EXTENSIONS),
+				});
 			},
 		},
 	};
 }
 
-type VitePlugin = NonNullable<AstroConfig["vite"]["plugins"]>[number];
+type VitePlugin = NonNullable<AstroConfig['vite']['plugins']>[number];
 
 function vitePluginImportContent() {
 	return {
-		name: "astro-reader",
-		enforce: "pre",
-		async transform(source: string, id: string) {
-			if (!EXTENSIONS.some((ext) => id.endsWith(ext))) return;
+		name: 'vite-plugin-astro-reader-content-loader',
+		enforce: 'pre',
+		async load(id: string) {
+			if (!id.endsWith('.pdf') || id.includes('?')) {
+				return null;
+			}
 
-			const sourceName = sourceNameFor(id) ?? "";
-			const assetTitle = titleFor(sourceName);
-			const meta = toMetadata(parseLyHeaderFields(source));
-			const alt = altTextFor(meta);
-			const dv: DocumentViewer = {
-				source,
-				alt,
-				sourceName,
-				assetTitle,
-				meta,
-			};
-			return {
-				code: `export default ${JSON.stringify(dv)}`,
-			};
+			const stat = await fs.stat(id);
+			const mtimeMs = stat.mtimeMs;
+			const size = stat.size;
+
+			const sourceKey = `${mtimeMs}-${size}`;
+
+			const assetTitle = titleFor(id);
+
+			return `
+        export default {
+          isLocalPdf: true,
+          filePath: ${JSON.stringify(id)},
+          sourceHash: ${JSON.stringify(sourceKey)},
+          assetTitle: ${JSON.stringify(assetTitle)}
+        };
+      `;
 		},
 	} satisfies VitePlugin;
 }

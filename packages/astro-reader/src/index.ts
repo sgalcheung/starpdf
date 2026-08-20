@@ -1,3 +1,3 @@
-import { astroReader } from "./integration.js";
+import { astroReader } from './integration.js';
 
 export default astroReader;

@@ -4,20 +4,20 @@ import {
 	renderComponent,
 	renderTemplate,
 	unescapeHTML,
-} from "astro/runtime/server/index.js";
-import { emitAsset } from "astro-emit-asset/emit";
-import { resolveDefaults } from "../../../packages/astro-reader/src/utils";
-import { hashBuffer } from "../../../packages/astro-reader/src/utils/bufferHelper";
-import { imageDimensionsFor } from "../../../packages/astro-reader/src/utils/imageDimensions";
-import { renderedErrorHtml } from "../../../packages/astro-reader/src/utils/renderedErrorHtml";
-import { renderedHtml } from "../../../packages/astro-reader/src/utils/renderedHtml";
-import { getState } from "../state";
-import type { Format, ImageResult, Page, Score } from "../types";
+} from 'astro/runtime/server/index.js';
+import { emitAsset } from 'astro-emit-asset/emit';
+import { resolveDefaults } from '../../../packages/astro-reader/src/utils';
+import { hashBuffer } from '../../../packages/astro-reader/src/utils/bufferHelper';
+import { imageDimensionsFor } from '../../../packages/astro-reader/src/utils/imageDimensions';
+import { renderedErrorHtml } from '../../../packages/astro-reader/src/utils/renderedErrorHtml';
+import { renderedHtml } from '../../../packages/astro-reader/src/utils/renderedHtml';
+import { getState } from '../state';
+import type { Format, ImageResult, Page, Score } from '../types';
 import {
 	markdownToImage,
 	resourceFromUrl,
 	type UrlResource,
-} from "./markdown-image";
+} from './markdown-image';
 
 const PAGE_WIDTH = 595;
 const PAGE_HEIGHT = 842;
@@ -56,8 +56,8 @@ export interface GetScoreResult {
 }
 
 export interface ScoreProps
-	extends Omit<ScoreImageProps, "format">,
-		Pick<GetScoreOptions, "format" | "crop"> {
+	extends Omit<ScoreImageProps, 'format'>,
+		Pick<GetScoreOptions, 'format' | 'crop'> {
 	/**
 	 * A `LilypondScore` from a `.ly`/`.ily`/`.lilypond` import
 	 * or a `lilypondLoader()` entry.
@@ -92,11 +92,11 @@ export async function getScore(
 			buffer = resource.buffer;
 			source = hashBuffer(buffer);
 		} else {
-			throw new Error("Either score or url is required.");
+			throw new Error('Either score or url is required.');
 		}
 
 		const page = await emitMyAsset({
-			title: score?.assetTitle ?? resource?.name ?? "untitled",
+			title: score?.assetTitle ?? resource?.name ?? 'untitled',
 			format,
 			source,
 			resolution,
@@ -108,7 +108,7 @@ export async function getScore(
 				}
 
 				if (resource) {
-					if (resource.extension == ".txt") {
+					if (resource.extension == '.txt') {
 						return generateTextPdfAsset(
 							resource.name,
 							resource.name,
@@ -118,19 +118,19 @@ export async function getScore(
 					return resource.buffer;
 				}
 
-				throw new Error("Either score or url is required.");
+				throw new Error('Either score or url is required.');
 			},
 		});
 		return {
-			Score: createScoreComponent({ page, alt: "score.alt", format }),
+			Score: createScoreComponent({ page, alt: 'score.alt', format }),
 			page,
 		};
 	} catch (err) {
 		if (!state.isDev) throw err;
 		return {
-			Score: createErrorScoreComponent(err, "score.assetTitle"),
+			Score: createErrorScoreComponent(err, 'score.assetTitle'),
 			page: {
-				src: "",
+				src: '',
 			},
 			pdf: undefined,
 			// meta: score.meta,
@@ -146,7 +146,7 @@ export const ScoreTag: AstroComponentFactory = createComponent(
 			format,
 			crop,
 		});
-		return renderTemplate`${renderComponent(result, "Score", ContentScore, imageProps)}`;
+		return renderTemplate`${renderComponent(result, 'Score', ContentScore, imageProps)}`;
 	},
 );
 
@@ -161,7 +161,7 @@ interface ScoreImageProps {
 function createScoreComponent(content: ImageResult): AstroComponentFactory {
 	return createComponent((_result, props: ScoreImageProps) => {
 		const format = content.format;
-		const alt = props.alt ?? content.alt ?? "";
+		const alt = props.alt ?? content.alt ?? '';
 		const html = renderedHtml(content.page, format, alt, {
 			class: props.class,
 			style: props.style,
@@ -188,20 +188,20 @@ const toSafeSegment = (value: string) =>
 	value
 		.trim()
 		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, "-")
-		.replace(/^-+|-+$/g, "") || "document";
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '') || 'document';
 
 const escapePdfText = (value: string) =>
-	value.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+	value.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
 
 const wrapText = (value: string, maxCharsPerLine: number) => {
-	const normalized = value.replace(/\r\n/g, "\n").trim() || " ";
+	const normalized = value.replace(/\r\n/g, '\n').trim() || ' ';
 	const paragraphs = normalized.split(/\n+/);
 	const lines: string[] = [];
 
 	for (const paragraph of paragraphs) {
 		const words = paragraph.split(/\s+/);
-		let current = "";
+		let current = '';
 
 		for (const word of words) {
 			const candidate = current ? `${current} ${word}` : word;
@@ -218,7 +218,7 @@ const wrapText = (value: string, maxCharsPerLine: number) => {
 				for (let i = 0; i < word.length; i += maxCharsPerLine) {
 					lines.push(word.slice(i, i + maxCharsPerLine));
 				}
-				current = "";
+				current = '';
 			} else {
 				current = word;
 			}
@@ -229,7 +229,7 @@ const wrapText = (value: string, maxCharsPerLine: number) => {
 		}
 	}
 
-	return lines.length ? lines : [" "];
+	return lines.length ? lines : [' '];
 };
 
 function buildMinimalPdf({
@@ -239,23 +239,23 @@ function buildMinimalPdf({
 	title: string;
 	content: string;
 }) {
-	const safeTitle = (title || "Document").trim() || "Document";
+	const safeTitle = (title || 'Document').trim() || 'Document';
 	const titleLines = wrapText(safeTitle, 38);
 	const bodyLines = wrapText(content, 78);
-	const allLines = [...titleLines, "", ...bodyLines];
+	const allLines = [...titleLines, '', ...bodyLines];
 	const maxBodyLines = Math.max(1, allLines.length);
 
 	const streamLines: string[] = [];
 	let currentY = PAGE_HEIGHT - PAGE_MARGIN_Y;
 
 	const appendText = (fontSize: number, text: string, x: number, y: number) => {
-		streamLines.push("BT");
+		streamLines.push('BT');
 		streamLines.push(
-			`/${fontSize === TITLE_FONT_SIZE ? "F1" : "F1"} ${fontSize} Tf`,
+			`/${fontSize === TITLE_FONT_SIZE ? 'F1' : 'F1'} ${fontSize} Tf`,
 		);
 		streamLines.push(`${x} ${y} Td`);
 		streamLines.push(`(${escapePdfText(text)}) Tj`);
-		streamLines.push("ET");
+		streamLines.push('ET');
 	};
 
 	appendText(
@@ -275,31 +275,31 @@ function buildMinimalPdf({
 		currentY -= BODY_LINE_HEIGHT;
 	}
 
-	const stream = streamLines.join("\n");
+	const stream = streamLines.join('\n');
 	const objects = [
-		"<< /Type /Catalog /Pages 2 0 R >>",
-		"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+		'<< /Type /Catalog /Pages 2 0 R >>',
+		'<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
 		`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>`,
-		`<< /Length ${Buffer.byteLength(stream, "utf8")} >>\nstream\n${stream}\nendstream`,
-		"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+		`<< /Length ${Buffer.byteLength(stream, 'utf8')} >>\nstream\n${stream}\nendstream`,
+		'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
 	];
 
-	let pdf = "%PDF-1.4\n";
+	let pdf = '%PDF-1.4\n';
 	const offsets: number[] = [0];
 
 	for (let i = 0; i < objects.length; i += 1) {
-		offsets.push(Buffer.byteLength(pdf, "latin1"));
+		offsets.push(Buffer.byteLength(pdf, 'latin1'));
 		pdf += `${i + 1} 0 obj\n${objects[i]}\nendobj\n`;
 	}
 
-	const xrefOffset = Buffer.byteLength(pdf, "latin1");
+	const xrefOffset = Buffer.byteLength(pdf, 'latin1');
 	pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
 	for (let i = 0; i < objects.length; i += 1) {
-		pdf += `${String(offsets[i + 1]).padStart(10, "0")} 00000 n \n`;
+		pdf += `${String(offsets[i + 1]).padStart(10, '0')} 00000 n \n`;
 	}
 	pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
 
-	return Buffer.from(pdf, "latin1");
+	return Buffer.from(pdf, 'latin1');
 }
 
 export function generateTextPdfAsset(
@@ -349,7 +349,7 @@ export async function emitPdfAsset(
 
 	const asset = await emitAsset(
 		`${title}.[hash].pdf`,
-		[source, "pdf"],
+		[source, 'pdf'],
 		async () => {
 			const [data] = await render();
 			return { data };

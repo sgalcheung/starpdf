@@ -1,5 +1,5 @@
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /**
  * Make sure that any `\include` definitions resolve correctly when
@@ -12,6 +12,6 @@ export function includePathsFor(
 	extra: string[] = [],
 ): string[] {
 	if (!source) return extra;
-	const path = typeof source === "string" ? source : fileURLToPath(source);
+	const path = typeof source === 'string' ? source : fileURLToPath(source);
 	return [dirname(path), ...extra];
 }

@@ -1,4 +1,4 @@
-import { unescapeQuoted } from "./unescapeQuoted.ts";
+import { unescapeQuoted } from './unescapeQuoted.ts';
 
 export interface LyHeaderFields {
 	title?: string;
@@ -8,7 +8,7 @@ export interface LyHeaderFields {
 /** Finds the index of the `"` that closes the quoted string starting at `source[quoteIndex]`, honoring backslash escapes. Returns -1 if unterminated. */
 function matchQuotedStringEnd(source: string, quoteIndex: number): number {
 	for (let i = quoteIndex + 1; i < source.length; i++) {
-		if (source[i] === "\\") {
+		if (source[i] === '\\') {
 			i++;
 			continue;
 		}
@@ -24,13 +24,13 @@ function matchBalancedBraces(source: string, openBraceIndex: number): number {
 	for (let i = openBraceIndex + 1; i < source.length; i++) {
 		const ch = source[i];
 		if (inString) {
-			if (ch === "\\") i++;
+			if (ch === '\\') i++;
 			else if (ch === '"') inString = false;
 			continue;
 		}
 		if (ch === '"') inString = true;
-		else if (ch === "{") depth++;
-		else if (ch === "}") {
+		else if (ch === '{') depth++;
+		else if (ch === '}') {
 			depth--;
 			if (depth === 0) return i;
 		}
@@ -47,15 +47,15 @@ function matchBalancedBraces(source: string, openBraceIndex: number): number {
  * source.
  */
 function stripComments(source: string): string {
-	let result = "";
+	let result = '';
 	let inString = false;
 	for (let i = 0; i < source.length; i++) {
 		const ch = source[i];
 		if (inString) {
 			result += ch;
-			if (ch === "\\") {
+			if (ch === '\\') {
 				i++;
-				result += source[i] ?? "";
+				result += source[i] ?? '';
 			} else if (ch === '"') {
 				inString = false;
 			}
@@ -66,17 +66,17 @@ function stripComments(source: string): string {
 			result += ch;
 			continue;
 		}
-		if (ch === "%" && source[i + 1] === "{") {
-			const end = source.indexOf("%}", i + 2);
+		if (ch === '%' && source[i + 1] === '{') {
+			const end = source.indexOf('%}', i + 2);
 			const stop = end === -1 ? source.length : end + 2;
-			result += " ".repeat(stop - i);
+			result += ' '.repeat(stop - i);
 			i = stop - 1;
 			continue;
 		}
-		if (ch === "%") {
-			const end = source.indexOf("\n", i);
+		if (ch === '%') {
+			const end = source.indexOf('\n', i);
 			const stop = end === -1 ? source.length : end;
-			result += " ".repeat(stop - i);
+			result += ' '.repeat(stop - i);
 			i = stop - 1;
 			continue;
 		}
@@ -105,19 +105,19 @@ function allHeaderBodies(source: string): string[] {
 function skipSchemeDatum(source: string, i: number): number {
 	i++; // past '#'
 	if (source[i] === "'") i++; // optional quote prefix
-	if (source[i] === "(") {
+	if (source[i] === '(') {
 		let depth = 0;
 		let inString = false;
 		do {
 			const ch = source[i];
 			if (inString) {
-				if (ch === "\\") i++;
+				if (ch === '\\') i++;
 				else if (ch === '"') inString = false;
 			} else if (ch === '"') {
 				inString = true;
-			} else if (ch === "(") {
+			} else if (ch === '(') {
 				depth++;
-			} else if (ch === ")") {
+			} else if (ch === ')') {
 				depth--;
 			}
 			i++;
@@ -157,15 +157,15 @@ export function extractMarkupText(markupInner: string): string {
 			i = end + 1;
 			continue;
 		}
-		if (ch === "{" || ch === "}") {
+		if (ch === '{' || ch === '}') {
 			i++;
 			continue;
 		}
-		if (ch === "#") {
+		if (ch === '#') {
 			i = skipSchemeDatum(markupInner, i);
 			continue;
 		}
-		if (ch === "\\") {
+		if (ch === '\\') {
 			let j = i + 1;
 			while (j < n && /[A-Za-z-]/.test(markupInner[j])) j++;
 			i = j;
@@ -176,7 +176,7 @@ export function extractMarkupText(markupInner: string): string {
 		tokens.push(markupInner.slice(i, j));
 		i = j;
 	}
-	return tokens.join(" ").replace(/\s+/g, " ").trim();
+	return tokens.join(' ').replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -197,14 +197,14 @@ function parseFieldValue(
 		const value = unescapeQuoted(body.slice(start + 1, end)).trim();
 		return value ? { value, end: end + 1 } : null;
 	}
-	const MARKUP = "\\markup";
+	const MARKUP = '\\markup';
 	if (
 		body.startsWith(MARKUP, start) &&
-		!/[A-Za-z-]/.test(body[start + MARKUP.length] ?? "")
+		!/[A-Za-z-]/.test(body[start + MARKUP.length] ?? '')
 	) {
 		let i = start + MARKUP.length;
 		while (/\s/.test(body[i])) i++;
-		if (body[i] !== "{") return null;
+		if (body[i] !== '{') return null;
 		// body is itself a properly-nested brace sequence (see allHeaderBodies), so this `{` always has a matching `}`.
 		const end = matchBalancedBraces(body, i);
 		const value = extractMarkupText(body.slice(i + 1, end));

@@ -1,15 +1,15 @@
-import type { SSRResult } from "astro";
-import { experimental_AstroContainer } from "astro/container";
+import type { SSRResult } from 'astro';
+import { experimental_AstroContainer } from 'astro/container';
 import {
 	addAttribute,
 	renderComponent,
 	renderTemplate,
-} from "astro/runtime/server/index.js";
-import PDFViewer from "../components/PDFViewer.astro";
-import { FORMATS, type Format, type Page } from "../types.ts";
+} from 'astro/runtime/server/index.js';
+import PDFViewer from '../components/PDFViewer.astro';
+import { FORMATS, type Format, type Page } from '../types.ts';
 
 function imgTag(page: Page, alt: string): string {
-	return `<img data-lilypond-image${addAttribute(page.src, "src")}${addAttribute(page.width, "width")}${addAttribute(page.height, "height")}${addAttribute(alt, "alt")}>`;
+	return `<img data-lilypond-image${addAttribute(page.src, 'src')}${addAttribute(page.width, 'width')}${addAttribute(page.height, 'height')}${addAttribute(alt, 'alt')}>`;
 }
 
 export interface RenderedHtmlOptions {
@@ -32,8 +32,8 @@ export async function renderedHtml(
 	// 	pageLimit === undefined ? pages : pages.slice(0, pageLimit);
 	// if (limitedPages.length === 0) return "";
 
-	const classAttr = addAttribute(className, "class");
-	const styleAttr = addAttribute(style, "style");
+	const classAttr = addAttribute(className, 'class');
+	const styleAttr = addAttribute(style, 'style');
 
 	// if (limitedPages.length === 1) {
 	// 	const page = limitedPages[0];
@@ -54,8 +54,8 @@ export async function renderedHtml(
 		//     style,
 		//   },
 		// });
-		return `<iframe${addAttribute(page.src, "src")}${addAttribute(page.width, "width")}${addAttribute(page.height, "height")}></iframe>`;
+		return `<iframe${addAttribute(page.src, 'src')}${addAttribute(page.width, 'width')}${addAttribute(page.height, 'height')}></iframe>`;
 	}
 	// TODO: hide pdf url
-	return `<img data-lilypond-image${classAttr}${addAttribute(page.src, "src")}${addAttribute(page.width, "width")}${addAttribute(page.height, "height")}${addAttribute(alt, "alt")}${styleAttr}>`;
+	return `<img data-lilypond-image${classAttr}${addAttribute(page.src, 'src')}${addAttribute(page.width, 'width')}${addAttribute(page.height, 'height')}${addAttribute(alt, 'alt')}${styleAttr}>`;
 }

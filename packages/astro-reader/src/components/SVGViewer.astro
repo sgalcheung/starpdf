@@ -1,14 +1,11 @@
 ---
-import { addAttribute } from "astro/runtime/server/index.js";
-import type { Page } from "../types.js";
+import type { Page } from '../types.js';
 
 interface Props {
 	page: Page;
 }
 
 const { page } = Astro.props;
-
-const src = addAttribute(page.src, "src");
 ---
 
-<img {src} />
+<img src={page.src} />

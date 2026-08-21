@@ -4,3 +4,5 @@ packages:
 allowBuilds:
   esbuild: false
   sharp: false
+catalog:
+  typescript: ^6.0.3

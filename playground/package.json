@@ -24,6 +24,7 @@
   },
   "packageManager": "pnpm@11.22.0",
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "vite": "^8.2.1",
     "vite-plugin-static-copy": "^4.1.1"
   }

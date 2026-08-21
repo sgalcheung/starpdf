@@ -4,13 +4,8 @@ import path from "node:path";
 import type { AstroConfig, AstroIntegration } from "astro";
 import emitAssetIntegration from "astro-emit-asset";
 
-import type { DocumentViewer } from "./server/DocumentViewer.ts";
 import { setState } from "./state.ts";
 import { EXTENSIONS } from "./types.ts";
-import { altTextFor } from "./utils/altTextFor.ts";
-import { hashBuffer } from "./utils/bufferHelper.ts";
-import { toMetadata } from "./utils/metadata.ts";
-import { sourceNameFor } from "./utils/sourceNameFor.ts";
 import { titleFor } from "./utils/titleFor.ts";
 import { typeDeclarationsFor } from "./utils/typeDeclarationsFor.ts";
 
@@ -83,27 +78,76 @@ function vitePluginImportContent() {
 	return {
 		name: "vite-plugin-astro-reader-content-loader",
 		enforce: "pre",
-		async load(id: string) {
-			if (!id.endsWith(".pdf") || id.includes("?")) {
-				return null;
+
+		async transform(code, id) {
+			const isMd = id.endsWith(".md") || id.endsWith(".markdown");
+			const isPdf = id.endsWith(".pdf");
+			const isText = id.endsWith(".txt");
+
+			// 排除带查询参数的文件 (如 ?url, ?raw, ?astro)
+			if (!(isMd || isPdf || isText) || id.includes("?")) {
+				return null; // 放行，交给 Astro 或 Vite 默认处理
 			}
 
-			const stat = await fs.stat(id);
-			const mtimeMs = stat.mtimeMs;
-			const size = stat.size;
+			// ⚠️ 强烈建议：限制拦截范围，避免破坏 Astro 的 Content Collections
+			// 例如：只拦截 src/data/ 或 src/assets/ 目录下的文件
+			// if (!id.includes('/data/') && !id.includes('/assets/')) {
+			//   return null;
+			// }
 
-			const sourceKey = `${mtimeMs}-${size}`;
+			const absolutePath = path.isAbsolute(id) ? id : path.resolve(process.cwd(), id);
 
-			const assetTitle = titleFor(id);
+			try {
+				// 获取元数据 (虽然 Vite 已经读了一次文件内容作为 code 传给我们，
+				// 但为了保持逻辑统一和获取 mtime，我们依然调用 stat)
+				const stat = await fs.stat(absolutePath);
+				const sourceKey = `${stat.mtimeMs}-${stat.size}`;
+				const assetTitle = titleFor(absolutePath);
 
-			return `
-        export default {
-          isLocalPdf: true,
-          filePath: ${JSON.stringify(id)},
-          sourceHash: ${JSON.stringify(sourceKey)},
-          assetTitle: ${JSON.stringify(assetTitle)}
-        };
-      `;
+				let resourceType: "pdf" | "markdown" | "text" = "text";
+				if (isPdf) resourceType = "pdf";
+				else if (isMd) resourceType = "markdown";
+
+				// ⭐ 核心：返回新的代码对象。Vite 会停止后续的 transform，
+				// Astro 的 Markdown 插件将不会处理这个文件。
+				return {
+					code: `export default {
+            resourceType: ${JSON.stringify(resourceType)},
+            filePath: ${JSON.stringify(absolutePath)},
+            sourceKey: ${JSON.stringify(sourceKey)},
+            assetTitle: ${JSON.stringify(assetTitle)}
+          };`,
+					map: null,
+				};
+			} catch (err) {
+				console.error(`[astro-reader] Failed to transform ${id}:`, err);
+				return null; // 出错时回退
+			}
 		},
+
+		// async load(id: string) {
+		// 	const isPdf = id.endsWith(".pdf");
+		// 	const isText = id.endsWith(".txt");
+
+		// 	if (!(isPdf || isText) || id.includes("?")) {
+		// 		return null;
+		// 	}
+
+		// 	const stat = await fs.stat(id);
+		// 	const sourceKey = `${stat.mtimeMs}-${stat.size}`;
+		// 	const assetTitle = titleFor(id);
+
+		// 	let resourceType: "pdf" | "text" = "text";
+		// 	if (isPdf) resourceType = "pdf";
+
+		// 	return `
+		//     export default {
+		//       resourceType: ${JSON.stringify(resourceType)},
+		//       filePath: ${JSON.stringify(id)},
+		//       sourceKey: ${JSON.stringify(sourceKey)},
+		//       assetTitle: ${JSON.stringify(assetTitle)}
+		//     };
+		//   `;
+		// },
 	} satisfies VitePlugin;
 }

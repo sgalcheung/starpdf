@@ -1,9 +1,13 @@
 ---
+import path from 'node:path';
 import {
 	type DocumentResource,
-	fromLocalPdf,
-	fromPathOrUrl,
+	fromAstroMarkdown,
+	fromBinaryPathOrUrl,
+	fromLocalFile,
+	fromMarkdownPathOrUrl,
 	fromTextContent,
+	fromTextPathOrUrl,
 	getDocumentViewer,
 } from '../server/DocumentViewer.js';
 import PDFViewer from './PDFViewer.astro';
@@ -22,13 +26,23 @@ const { format = 'pdf', content, url, ...restProps } = Astro.props;
 let resource: DocumentResource;
 
 if (content) {
-	if ('isLocalPdf' in content && content.isLocalPdf) {
-		resource = fromLocalPdf(content);
-	} else {
-		resource = fromTextContent(content);
-	}
+  if ('resourceType' in content && 'filePath' in content) {
+    resource = fromLocalFile(content);
+  } else {
+    throw new Error('<DocumentViewer> Unrecognized content format.');
+  }
 } else if (url) {
-	resource = await fromPathOrUrl(url);
+	const ext = path.extname(url).toLowerCase();
+  
+  if (ext === '.pdf') {
+    resource = await fromBinaryPathOrUrl(url);
+  } else if (ext === '.txt') {
+    resource = await fromTextPathOrUrl(url);
+  } else if (ext === '.md' || ext === '.markdown') {
+    resource = await fromMarkdownPathOrUrl(url);
+  } else {
+    throw new Error(`<DocumentViewer> Unsupported file extension for url: ${ext}`);
+  }
 } else {
 	throw new Error('<DocumentViewer> requires either `content` or `url` prop.');
 }

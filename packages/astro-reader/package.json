@@ -42,10 +42,14 @@
   "dependencies": {
     "astro-emit-asset": "^0.1.4",
     "marked": "^18.0.9",
+    "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.7.284",
-    "playwright": "^1.62.1"
+    "playwright": "^1.62.1",
+    "satori": "^0.30.0",
+    "satori-html": "^0.3.2"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "tsdown": "0.22.14"
   }
 }

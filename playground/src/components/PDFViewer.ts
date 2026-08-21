@@ -1,13 +1,13 @@
-import * as pdfjsLib from 'pdfjs-dist';
-import * as pdfjsViewer from 'pdfjs-dist/web/pdf_viewer.mjs';
+import * as pdfjsLib from "pdfjs-dist";
+import * as pdfjsViewer from "pdfjs-dist/web/pdf_viewer.mjs";
 
-import 'pdfjs-dist/web/pdf_viewer.css';
+import "pdfjs-dist/web/pdf_viewer.css";
 
 /**
  * PDF.js Worker
  */
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-	'pdfjs-dist/build/pdf.worker.mjs',
+	"pdfjs-dist/build/pdf.worker.mjs",
 	import.meta.url,
 ).toString();
 
@@ -23,23 +23,19 @@ const CMAP_URL = `${basePath}/cmaps/`;
 /**
  * PDF.js Sandbox
  */
-const SANDBOX_BUNDLE_SRC = new URL(
-	'pdfjs-dist/build/pdf.sandbox.mjs',
-	import.meta.url,
-).toString();
+const SANDBOX_BUNDLE_SRC = new URL("pdfjs-dist/build/pdf.sandbox.mjs", import.meta.url).toString();
 
 /**
  * PDF Viewer 初始化
  */
 export async function initPdfViewer(): Promise<void> {
-	const containers =
-		document.querySelectorAll<HTMLDivElement>('.viewerContainer');
+	const containers = document.querySelectorAll<HTMLDivElement>(".viewerContainer");
 
 	for (const container of containers) {
 		/**
 		 * 防止重复初始化
 		 */
-		if (container.dataset.initialized === 'true') {
+		if (container.dataset.initialized === "true") {
 			continue;
 		}
 
@@ -49,7 +45,7 @@ export async function initPdfViewer(): Promise<void> {
 		const pdfUrl = container.dataset.pdfUrl;
 
 		if (!pdfUrl) {
-			console.error('[PDF] pdfUrl is empty');
+			console.error("[PDF] pdfUrl is empty");
 			continue;
 		}
 
@@ -62,14 +58,14 @@ export async function initPdfViewer(): Promise<void> {
 		const viewer = container.firstElementChild;
 
 		if (!(viewer instanceof HTMLDivElement)) {
-			console.error('[PDF] viewer must be HTMLDivElement');
+			console.error("[PDF] viewer must be HTMLDivElement");
 			continue;
 		}
 
 		/**
 		 * 标记初始化
 		 */
-		container.dataset.initialized = 'true';
+		container.dataset.initialized = "true";
 
 		try {
 			/**
@@ -121,8 +117,8 @@ export async function initPdfViewer(): Promise<void> {
 			/**
 			 * 页面初始化完成
 			 */
-			eventBus.on('pagesinit', () => {
-				pdfViewer.currentScaleValue = 'page-width';
+			eventBus.on("pagesinit", () => {
+				pdfViewer.currentScaleValue = "page-width";
 			});
 
 			/**
@@ -130,14 +126,12 @@ export async function initPdfViewer(): Promise<void> {
 			 */
 			const response = await fetch(pdfUrl, {
 				headers: {
-					'x-requested-with': 'XMLHttpRequest',
+					"x-requested-with": "XMLHttpRequest",
 				},
 			});
 
 			if (!response.ok) {
-				throw new Error(
-					`Failed to fetch PDF: ${response.status} ${response.statusText}`,
-				);
+				throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
 			}
 
 			/**
@@ -189,7 +183,7 @@ export async function initPdfViewer(): Promise<void> {
 function init(): void {
 	setTimeout(() => {
 		initPdfViewer().catch((error) => {
-			console.error('[PDF] initialization failed:', error);
+			console.error("[PDF] initialization failed:", error);
 		});
 	}, 0);
 }
@@ -197,8 +191,8 @@ function init(): void {
 /**
  * 首次加载
  */
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', init, {
+if (document.readyState === "loading") {
+	document.addEventListener("DOMContentLoaded", init, {
 		once: true,
 	});
 } else {
@@ -208,10 +202,10 @@ if (document.readyState === 'loading') {
 /**
  * Starlight / Astro 客户端导航
  */
-document.addEventListener('astro:after-swap', () => {
+document.addEventListener("astro:after-swap", () => {
 	setTimeout(() => {
 		initPdfViewer().catch((error) => {
-			console.error('[PDF] navigation initialization failed:', error);
+			console.error("[PDF] navigation initialization failed:", error);
 		});
 	}, 0);
 });

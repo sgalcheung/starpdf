@@ -1,4 +1,4 @@
-import { escapeHtml } from './escapeHtml.ts';
+import { escapeHtml } from "./escapeHtml.ts";
 
 const ERROR_STYLE = `display: block;
    margin: 1em 0;

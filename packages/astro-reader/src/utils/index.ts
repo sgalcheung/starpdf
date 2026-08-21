@@ -1,9 +1,7 @@
-import { type Defaults, defaultOptions } from '../types.ts';
+import { type Defaults, defaultOptions } from "../types.ts";
 
 /** Fills in any `defaults` fields left unset with `render.ts`'s own defaults. */
-export function resolveDefaults(
-	defaults: Defaults | undefined,
-): Required<Defaults> {
+export function resolveDefaults(defaults: Defaults | undefined): Required<Defaults> {
 	const { format, resolution, cropScale } = defaultOptions.defaults;
 
 	return {

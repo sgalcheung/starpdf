@@ -1,16 +1,14 @@
-import type { Format } from '../types.ts';
+import type { Format } from "../types.ts";
 
 export interface ImageDimensions {
 	width: number;
 	height: number;
 }
 
-const PNG_SIGNATURE = Buffer.from([
-	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
-]);
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
 function svgDimensions(buf: Buffer): ImageDimensions | undefined {
-	const openTag = buf.toString('utf8').match(/<svg\b[^>]*>/)?.[0];
+	const openTag = buf.toString("utf8").match(/<svg\b[^>]*>/)?.[0];
 	if (!openTag) return undefined;
 
 	const width = openTag.match(/\bwidth="([\d.]+)"/)?.[1];
@@ -34,9 +32,6 @@ function pngDimensions(buf: Buffer): ImageDimensions | undefined {
 }
 
 /** Reads a rendered asset's pixel/CSS-unit dimensions straight from its bytes. */
-export function imageDimensionsFor(
-	format: Format,
-	buf: Buffer,
-): ImageDimensions | undefined {
-	return format === 'svg' ? svgDimensions(buf) : pngDimensions(buf);
+export function imageDimensionsFor(format: Format, buf: Buffer): ImageDimensions | undefined {
+	return format === "svg" ? svgDimensions(buf) : pngDimensions(buf);
 }

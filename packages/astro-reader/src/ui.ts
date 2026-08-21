@@ -1,1 +1,1 @@
-export { DocumentViewer } from './components/index.js';
+export { DocumentViewer } from "./components/index.js";

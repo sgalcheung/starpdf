@@ -1,10 +1,6 @@
 {
 	"extends": "astro/tsconfigs/strict",
-	"include": [
-		"playground/.astro/types.d.ts",
-		"**/*",
-		"../packages/astro-reader/src/utils"
-	],
+	"include": ["playground/.astro/types.d.ts", "**/*", "../packages/astro-reader/src/utils"],
 	"exclude": ["playground/dist"],
 	"compilerOptions": {
 		"jsx": "react-jsx",

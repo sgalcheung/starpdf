@@ -1,26 +1,24 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import fs from "node:fs/promises";
+import path from "node:path";
+
 import {
 	type AstroComponentFactory,
 	createComponent,
 	renderTemplate,
 	unescapeHTML,
-} from 'astro/runtime/server/index.js';
-import {
-	markdownToImage,
-	resourceFromUrl,
-	type UrlResource,
-} from '../markdown-image.ts';
-import { getState } from '../state.ts';
-import type { Format, ImageResult, Page } from '../types.js';
-import { hashBuffer, hashString } from '../utils/bufferHelper.ts';
-import { emitMyAsset, emitPdfAsset } from '../utils/emitPdfAsset.ts';
-import { generateTextPdfAsset } from '../utils/generatePdf.ts';
-import { resolveDefaults } from '../utils/index.ts';
-import type { Metadata } from '../utils/metadata.ts';
-import { renderedErrorHtml } from '../utils/renderedErrorHtml.ts';
-import { renderedHtml } from '../utils/renderedHtml.ts';
-import { getUrlFileName } from '../utils/urlHelper.ts';
+} from "astro/runtime/server/index.js";
+
+import { markdownToImage, resourceFromUrl, type UrlResource } from "../markdown-image.ts";
+import { getState } from "../state.ts";
+import type { Format, ImageResult, Page } from "../types.js";
+import { hashBuffer, hashString } from "../utils/bufferHelper.ts";
+import { emitMyAsset, emitPdfAsset } from "../utils/emitPdfAsset.ts";
+import { generateTextPdfAsset } from "../utils/generatePdf.ts";
+import { resolveDefaults } from "../utils/index.ts";
+import type { Metadata } from "../utils/metadata.ts";
+import { renderedErrorHtml } from "../utils/renderedErrorHtml.ts";
+import { renderedHtml } from "../utils/renderedHtml.ts";
+import { getUrlFileName } from "../utils/urlHelper.ts";
 
 // export const DocumentViewer: AstroComponentFactory = createComponent(
 //   async (result, props: DocumentViewerProps) => {
@@ -33,15 +31,13 @@ import { getUrlFileName } from '../utils/urlHelper.ts';
 //   },
 // );
 
-function createDocumentViewerComponent(
-	content: ImageResult,
-): AstroComponentFactory {
+function createDocumentViewerComponent(content: ImageResult): AstroComponentFactory {
 	return createComponent((_result, props: DocumentViewerImageProps) => {
 		const format = content.format;
-		const alt = props.alt ?? content.alt ?? '';
+		const alt = props.alt ?? content.alt ?? "";
 		const html = renderedHtml(content.page, format, alt, {
-			class: props.class ?? '',
-			style: props.style ?? '',
+			class: props.class ?? "",
+			style: props.style ?? "",
 			pageLimit: props.pageLimit ?? 10,
 		});
 		return renderTemplate`${unescapeHTML(html)}`;
@@ -75,11 +71,8 @@ export function fromTextContent(content: DocumentViewer): DocumentResource {
  * Unified handling of remote URLs and local file paths
  * @param pathOrUrl - Remote URL (http/https) or local relative/absolute path
  */
-export async function fromPathOrUrl(
-	pathOrUrl: string,
-): Promise<DocumentResource> {
-	const isRemote =
-		pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://');
+export async function fromPathOrUrl(pathOrUrl: string): Promise<DocumentResource> {
+	const isRemote = pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://");
 
 	if (isRemote) {
 		return {
@@ -88,9 +81,7 @@ export async function fromPathOrUrl(
 			render: async () => {
 				const res = await fetch(pathOrUrl);
 				if (!res.ok) {
-					throw new Error(
-						`Failed to fetch remote document: ${res.status} ${res.statusText}`,
-					);
+					throw new Error(`Failed to fetch remote document: ${res.status} ${res.statusText}`);
 				}
 				return Buffer.from(await res.arrayBuffer());
 			},
@@ -104,7 +95,7 @@ export async function fromPathOrUrl(
 	const cacheKey = `${stat.mtimeMs}-${stat.size}`;
 
 	return {
-		title: fileName.replace(/\.[^/.]+$/, '') || fileName,
+		title: fileName.replace(/\.[^/.]+$/, "") || fileName,
 		cacheKey: cacheKey,
 		render: async () => {
 			return await fs.readFile(absolutePath);
@@ -175,10 +166,7 @@ export interface DocumentResource {
 	render: () => Promise<Buffer>;
 }
 
-export async function getDocumentViewer(
-	resource: DocumentResource,
-	format: Format,
-): Promise<Page> {
+export async function getDocumentViewer(resource: DocumentResource, format: Format): Promise<Page> {
 	try {
 		return await emitPdfAsset({
 			title: resource.title,
@@ -186,8 +174,8 @@ export async function getDocumentViewer(
 			render: resource.render,
 		});
 	} catch (err) {
-		console.error('[setCache] Error:', err);
-		return { src: '' };
+		console.error("[setCache] Error:", err);
+		return { src: "" };
 	}
 }
 
@@ -200,8 +188,7 @@ export interface DocumentViewer {
 }
 
 export interface DocumentViewerProps
-	extends DocumentViewerImageProps,
-		Pick<DocumentViewerOptions, 'format' | 'crop'> {
+	extends DocumentViewerImageProps, Pick<DocumentViewerOptions, "format" | "crop"> {
 	content?: DocumentViewer;
 	url?: string;
 }

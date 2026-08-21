@@ -1,31 +1,27 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import type { AstroConfig, AstroIntegration } from 'astro';
-import emitAssetIntegration from 'astro-emit-asset';
-import type { DocumentViewer } from './server/DocumentViewer.ts';
-import { setState } from './state.ts';
-import { EXTENSIONS } from './types.ts';
-import { altTextFor } from './utils/altTextFor.ts';
-import { hashBuffer } from './utils/bufferHelper.ts';
-import { toMetadata } from './utils/metadata.ts';
-import { parseLyHeaderFields } from './utils/parseLyHeader.ts';
-import { sourceNameFor } from './utils/sourceNameFor.ts';
-import { titleFor } from './utils/titleFor.ts';
-import { typeDeclarationsFor } from './utils/typeDeclarationsFor.ts';
+import fs from "node:fs/promises";
+import path from "node:path";
+
+import type { AstroConfig, AstroIntegration } from "astro";
+import emitAssetIntegration from "astro-emit-asset";
+
+import type { DocumentViewer } from "./server/DocumentViewer.ts";
+import { setState } from "./state.ts";
+import { EXTENSIONS } from "./types.ts";
+import { altTextFor } from "./utils/altTextFor.ts";
+import { hashBuffer } from "./utils/bufferHelper.ts";
+import { toMetadata } from "./utils/metadata.ts";
+import { sourceNameFor } from "./utils/sourceNameFor.ts";
+import { titleFor } from "./utils/titleFor.ts";
+import { typeDeclarationsFor } from "./utils/typeDeclarationsFor.ts";
 
 export function astroReader(): AstroIntegration {
 	return {
-		name: 'astro-reader',
+		name: "astro-reader",
 		hooks: {
-			'astro:config:setup': async ({
-				config,
-				command,
-				updateConfig,
-				logger,
-			}) => {
-				const isDev = command === 'dev';
+			"astro:config:setup": async ({ config, command, updateConfig, logger }) => {
+				const isDev = command === "dev";
 				setState({
-					binaryPath: '', // binaryPath,
+					binaryPath: "", // binaryPath,
 					defaults: undefined, // options.defaults,
 					timeout: undefined,
 					isDev,
@@ -71,9 +67,9 @@ export function astroReader(): AstroIntegration {
 				// );
 			},
 
-			'astro:config:done': ({ injectTypes }) => {
+			"astro:config:done": ({ injectTypes }) => {
 				injectTypes({
-					filename: 'astro-reader-types.d.ts',
+					filename: "astro-reader-types.d.ts",
 					content: typeDeclarationsFor(EXTENSIONS),
 				});
 			},
@@ -81,14 +77,14 @@ export function astroReader(): AstroIntegration {
 	};
 }
 
-type VitePlugin = NonNullable<AstroConfig['vite']['plugins']>[number];
+type VitePlugin = NonNullable<AstroConfig["vite"]["plugins"]>[number];
 
 function vitePluginImportContent() {
 	return {
-		name: 'vite-plugin-astro-reader-content-loader',
-		enforce: 'pre',
+		name: "vite-plugin-astro-reader-content-loader",
+		enforce: "pre",
 		async load(id: string) {
-			if (!id.endsWith('.pdf') || id.includes('?')) {
+			if (!id.endsWith(".pdf") || id.includes("?")) {
 				return null;
 			}
 

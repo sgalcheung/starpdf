@@ -1,6 +1,7 @@
 // src/components/PdfViews.tsx
-import { useEffect, useRef } from 'react';
-import 'pdfjs-dist/web/pdf_viewer.css';
+import { useEffect, useRef } from "react";
+
+import "pdfjs-dist/web/pdf_viewer.css";
 
 interface Props {
 	pdfUrl: string;
@@ -12,20 +13,18 @@ export default function PdfViews({ pdfUrl }: Props) {
 
 	useEffect(() => {
 		const loadPdf = async () => {
-			const [{ getDocument, GlobalWorkerOptions }, pdfjsViewer] =
-				await Promise.all([
-					import('pdfjs-dist'),
-					import('pdfjs-dist/web/pdf_viewer.mjs'),
-					import('pdfjs-dist/build/pdf.worker?worker'),
-				]);
+			const [{ getDocument, GlobalWorkerOptions }, pdfjsViewer] = await Promise.all([
+				import("pdfjs-dist"),
+				import("pdfjs-dist/web/pdf_viewer.mjs"),
+				import("pdfjs-dist/build/pdf.worker?worker"),
+			]);
 
-			GlobalWorkerOptions.workerSrc =
-				'/node_modules/pdfjs-dist/build/pdf.worker.mjs';
+			GlobalWorkerOptions.workerSrc = "/node_modules/pdfjs-dist/build/pdf.worker.mjs";
 
-			const CMAP_URL = '/node_modules/pdfjs-dist/cmaps/';
+			const CMAP_URL = "/node_modules/pdfjs-dist/cmaps/";
 			const ENABLE_XFA = true;
 			const SANDBOX_BUNDLE_SRC = new URL(
-				'/node_modules/pdfjs-dist/build/pdf.sandbox.mjs',
+				"/node_modules/pdfjs-dist/build/pdf.sandbox.mjs",
 				window.location.href,
 			);
 
@@ -52,8 +51,8 @@ export default function PdfViews({ pdfUrl }: Props) {
 			pdfLinkService.setViewer(pdfViewer);
 			pdfScriptingManager.setViewer(pdfViewer);
 
-			eventBus.on('pagesinit', () => {
-				pdfViewer.currentScaleValue = 'page-width';
+			eventBus.on("pagesinit", () => {
+				pdfViewer.currentScaleValue = "page-width";
 			});
 
 			const loadingTask = getDocument({
@@ -76,20 +75,15 @@ export default function PdfViews({ pdfUrl }: Props) {
 			id="viewerContainer"
 			ref={containerRef}
 			style={{
-				maxWidth: '46rem',
-				width: '100%',
-				height: '100vh',
-				position: 'relative',
-				overflow: 'auto',
-				background: '#f9f9f9',
+				maxWidth: "46rem",
+				width: "100%",
+				height: "100vh",
+				position: "relative",
+				overflow: "auto",
+				background: "#f9f9f9",
 			}}
 		>
-			<div
-				id="viewer"
-				ref={viewerRef}
-				className="pdfViewer"
-				style={{ position: 'relative' }}
-			/>
+			<div id="viewer" ref={viewerRef} className="pdfViewer" style={{ position: "relative" }} />
 		</div>
 	);
 }

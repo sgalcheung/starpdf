@@ -1,17 +1,18 @@
-import { defineConfig } from 'tsdown';
-import pkg from './package.json' with { type: 'json' };
+import { defineConfig } from "tsdown";
+
+import pkg from "./package.json" with { type: "json" };
 
 export default defineConfig({
-	entry: ['src/index.ts'],
-	format: ['esm'],
-	target: 'node22',
+	entry: ["src/index.ts"],
+	format: ["esm"],
+	target: "node22",
 	unbundle: true,
 	fixedExtension: false,
 	dts: true,
 	sourcemap: false,
 	clean: true,
 	minify: false,
-	tsconfig: 'tsconfig.json',
+	tsconfig: "tsconfig.json",
 	deps: {
 		neverBundle: [
 			...Object.keys(pkg.peerDependencies),
@@ -24,8 +25,8 @@ export default defineConfig({
 			// keys, but in unbundle mode it emits the export specifiers without
 			// declaring the bindings
 			/.*\.json$/,
-			'fsevents',
-			'playwright-core',
+			"fsevents",
+			"playwright-core",
 		],
 	},
 });

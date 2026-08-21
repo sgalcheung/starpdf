@@ -1,4 +1,4 @@
-import { basename, extname } from 'node:path';
+import { basename, extname } from "node:path";
 
 const UNSAFE_CHARS = /[^a-zA-Z0-9_-]+/g;
 
@@ -9,11 +9,8 @@ const UNSAFE_CHARS = /[^a-zA-Z0-9_-]+/g;
  * location is unknown or sanitizes away to nothing.
  */
 export function titleFor(sourceName: string | undefined): string {
-	if (!sourceName) return 'dv';
+	if (!sourceName) return "dv";
 	const stem = basename(sourceName, extname(sourceName));
-	const safe = stem
-		.replace(UNSAFE_CHARS, '-')
-		.replace(/-+/g, '-')
-		.replace(/^-|-$/g, '');
-	return safe || 'dv';
+	const safe = stem.replace(UNSAFE_CHARS, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+	return safe || "dv";
 }

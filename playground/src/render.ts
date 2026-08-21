@@ -1,17 +1,15 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { resolveDefaults } from '../../packages/astro-reader/src/utils';
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+import { resolveDefaults } from "../../packages/astro-reader/src/utils";
 import {
 	readOutputFile,
 	safeInputFileName,
-} from '../../packages/astro-reader/src/utils/readOutputFile';
-import { defaultOptions, FORMATS, type InternalRenderOptions } from './types';
+} from "../../packages/astro-reader/src/utils/readOutputFile";
+import { defaultOptions, FORMATS, type InternalRenderOptions } from "./types";
 
-export async function render(
-	source: string,
-	options: InternalRenderOptions,
-): Promise<Buffer[]> {
+export async function render(source: string, options: InternalRenderOptions): Promise<Buffer[]> {
 	const {
 		format = defaultOptions.format,
 		crop = defaultOptions.crop,
@@ -28,15 +26,15 @@ export async function render(
 		throw new Error(`${format} is not a supported format`);
 	}
 
-	const dir = await mkdtemp(join(tmpdir(), 'astro-pdf-'));
+	const dir = await mkdtemp(join(tmpdir(), "astro-pdf-"));
 	const inputPath = join(dir, safeInputFileName(sourceName));
-	const outputBase = join(dir, 'output');
+	const outputBase = join(dir, "output");
 	// no svg output found in /var/folders/8g/5n26b_x56jj564fbg3g0529c0000gn/T/astro-lilypond-G0Tvd4
 	// debug: 阅读源码逻辑
 
 	console.log(source);
 	try {
-		await writeFile(inputPath, source, 'utf8');
+		await writeFile(inputPath, source, "utf8");
 
 		// await execLilyPond({
 		//   binaryPath,

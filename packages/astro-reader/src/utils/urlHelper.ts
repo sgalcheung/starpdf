@@ -1,4 +1,4 @@
-import path from 'node:path';
+import path from "node:path";
 
 /**
  * 从 URL 中提取文件名
@@ -17,16 +17,16 @@ export function getUrlFileName(url: string): string {
 		const fileName = path.basename(pathname);
 
 		// 4. 边缘情况处理：如果路径以 '/' 结尾，basename 会返回空字符串
-		if (!fileName || fileName === '/') {
+		if (!fileName || fileName === "/") {
 			// 尝试从 hostname 中提取一个有意义的名字，或者使用默认值
-			return parsedUrl.hostname.replace(/^www\./, '') || 'untitled';
+			return parsedUrl.hostname.replace(/^www\./, "") || "untitled";
 		}
 
 		return fileName;
 	} catch (error) {
 		// 5. 容错处理：如果传入的不是标准 URL (例如相对路径 "/assets/file.pdf")
 		// 回退到简单的字符串分割，并移除查询参数
-		const fallback = url.split('?')[0]?.split('#')[0]?.split('/').pop();
-		return fallback || 'untitled';
+		const fallback = url.split("?")[0]?.split("#")[0]?.split("/").pop();
+		return fallback || "untitled";
 	}
 }

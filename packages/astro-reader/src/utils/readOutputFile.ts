@@ -1,6 +1,7 @@
-import { readdir, readFile } from 'node:fs/promises';
-import { basename, dirname, join } from 'node:path';
-import type { Format } from '../types.ts';
+import { readdir, readFile } from "node:fs/promises";
+import { basename, dirname, join } from "node:path";
+
+import type { Format } from "../types.ts";
 
 /**
  * Resolves the base name to use for the temp input file. Strips any
@@ -9,10 +10,10 @@ import type { Format } from '../types.ts';
  * the generic `"input.ly"`.
  */
 export function safeInputFileName(sourceName: string | undefined): string {
-	if (!sourceName) return 'input.ly';
+	if (!sourceName) return "input.ly";
 	const base = basename(sourceName);
-	if (!base || base === '.' || base === '..' || !/^[\w.-]+$/.test(base)) {
-		return 'input.ly';
+	if (!base || base === "." || base === ".." || !/^[\w.-]+$/.test(base)) {
+		return "input.ly";
 	}
 	return base;
 }
@@ -27,9 +28,9 @@ function byPageNumber(a: RegExpMatchArray, b: RegExpMatchArray): number {
  * uses `<base>-page1.<ext>`. `pdf` always renders to one `<base>.pdf`.
  */
 const PAGE_NUMBER_INFIX: Record<Format, string> = {
-	svg: '-',
-	png: '-page',
-	pdf: '-',
+	svg: "-",
+	png: "-page",
+	pdf: "-",
 };
 
 export async function readOutputFile(
@@ -59,9 +60,7 @@ export async function readOutputFile(
 		return [await readFile(join(dir, `${prefix}.${format}`))];
 	}
 
-	const pagePattern = new RegExp(
-		`^${prefix}${PAGE_NUMBER_INFIX[format]}(\\d+)\\.${format}$`,
-	);
+	const pagePattern = new RegExp(`^${prefix}${PAGE_NUMBER_INFIX[format]}(\\d+)\\.${format}$`);
 	const pages = entries
 		.map((name) => name.match(pagePattern))
 		.filter((match): match is RegExpMatchArray => match !== null)

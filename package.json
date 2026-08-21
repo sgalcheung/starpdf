@@ -1,24 +1,34 @@
 {
-	"name": "root",
-	"private": true,
-	"packageManager": "pnpm@11.22.0",
-	"engines": {
-		"node": ">=22.12.0"
-	},
-	"scripts": {
-		"package:dev": "pnpm --filter astro-reader dev",
-		"playground:dev": "pnpm --filter playground dev",
-		"dev": "pnpm --stream -r -parallel dev",
-		"changeset": "changeset",
-		"lint": "biome check .",
-		"lint:fix": "biome check --write",
-		"ci-version": "changeset version && pnpm install --no-frozen-lockfile",
-		"ci-publish": "changeset publish"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.5.8",
-		"@changesets/changelog-github": "1.0.0",
-		"@changesets/cli": "3.0.0",
-		"@playwright/test": "^1.62.1"
-	}
+  "name": "root",
+  "private": true,
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "package:dev": "pnpm --filter astro-reader dev",
+    "playground:dev": "pnpm --filter playground dev",
+    "dev": "pnpm --stream -r -parallel dev",
+    "changeset": "changeset",
+    "format": "oxfmt --ignore-path .gitignore && prettier --write .",
+    "format:check": "oxfmt --ignore-path .gitignore --check && prettier --check .",
+    "format:astro": "prettier --write .",
+    "lint": "oxlint --type-aware --deny-warnings",
+    "lint:quick": "oxlint -f json",
+    "lint:json": "oxlint --type-aware -f json",
+    "lint:fix": "oxlint --type-aware --fix",
+    "ci-version": "changeset version && pnpm install --no-frozen-lockfile",
+    "ci-publish": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "1.0.0",
+    "@changesets/cli": "3.0.0",
+    "@e18e/eslint-plugin": "^0.8.0",
+    "@playwright/test": "^1.62.1",
+    "oxfmt": "^0.64.0",
+    "oxlint": "^1.79.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1"
+  }
 }

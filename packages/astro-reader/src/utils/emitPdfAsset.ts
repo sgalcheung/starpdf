@@ -1,4 +1,4 @@
-import { emitAsset } from 'astro-emit-asset/emit';
+import { emitAsset } from "astro-emit-asset/emit";
 
 export interface EmitPdfAssetOptions {
 	title: string;
@@ -6,19 +6,13 @@ export interface EmitPdfAssetOptions {
 	render: () => Promise<Buffer>;
 }
 
-export async function emitPdfAsset(
-	options: EmitPdfAssetOptions,
-): Promise<PdfResult> {
+export async function emitPdfAsset(options: EmitPdfAssetOptions): Promise<PdfResult> {
 	const { title, source, render } = options;
 
-	const asset = await emitAsset(
-		`${title}.[hash].pdf`,
-		[source, 'pdf'],
-		async () => {
-			const data = await render();
-			return { data };
-		},
-	);
+	const asset = await emitAsset(`${title}.[hash].pdf`, [source, "pdf"], async () => {
+		const data = await render();
+		return { data };
+	});
 
 	return { src: asset.src };
 }
